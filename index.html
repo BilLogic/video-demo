@@ -849,6 +849,42 @@
       stroke-width: 2;
     }
 
+    /* Video Demo Stepper */
+    #demo-stepper {
+      opacity: 0;
+    }
+
+    .demo-stepper-circle {
+      stroke-width: 2.5;
+    }
+
+    .demo-stepper-number {
+      font-size: 18px;
+      font-weight: 600;
+      text-anchor: middle;
+      dominant-baseline: central;
+      font-family: 'Lato', sans-serif;
+    }
+
+    .demo-stepper-label {
+      font-size: 18px;
+      font-weight: 400;
+      text-anchor: middle;
+      font-family: 'Lato', sans-serif;
+    }
+
+    .demo-progress-bg {
+      stroke: #C4C4C4;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .demo-progress-fill {
+      stroke: #58D4DE;
+      stroke-width: 3;
+      fill: none;
+    }
+
     /* AI and Human Shape Styles */
     .ai-human-container {
       opacity: 0;
@@ -1021,6 +1057,69 @@
         <g id="sparkles"></g>
 
         <g id="overlays"></g>
+
+        <!-- ======================================== -->
+        <!-- VIDEO DEMO STEPPER                        -->
+        <!-- 4 nodes at y=960: x=510, 810, 1110, 1410  -->
+        <!-- Circles r=28, lines 244px between edges    -->
+        <!-- ======================================== -->
+        <g id="demo-stepper" opacity="0">
+          <!-- Background lines (grey) -->
+          <line id="demo-bg-1" class="demo-progress-bg" x1="538" y1="960" x2="782" y2="960" />
+          <line id="demo-bg-2" class="demo-progress-bg" x1="838" y1="960" x2="1082" y2="960" />
+          <line id="demo-bg-3" class="demo-progress-bg" x1="1138" y1="960" x2="1382" y2="960" />
+
+          <!-- Foreground fill lines (teal, animated via stroke-dashoffset) -->
+          <line id="demo-fill-1" class="demo-progress-fill"
+            x1="538" y1="960" x2="782" y2="960"
+            stroke-dasharray="244" stroke-dashoffset="244" />
+          <line id="demo-fill-2" class="demo-progress-fill"
+            x1="838" y1="960" x2="1082" y2="960"
+            stroke-dasharray="244" stroke-dashoffset="244" />
+          <line id="demo-fill-3" class="demo-progress-fill"
+            x1="1138" y1="960" x2="1382" y2="960"
+            stroke-dasharray="244" stroke-dashoffset="244" />
+
+          <!-- Node 01: Pre-session Coach -->
+          <g id="demo-node-1">
+            <circle id="demo-circle-1" class="demo-stepper-circle"
+              cx="510" cy="960" r="28" fill="transparent" stroke="#C4C4C4" />
+            <text id="demo-number-1" class="demo-stepper-number"
+              x="510" y="960" fill="#757575">01</text>
+            <text id="demo-label-1" class="demo-stepper-label"
+              x="510" y="1018" fill="#757575">Pre-session Coach</text>
+          </g>
+
+          <!-- Node 02: In-session Co-pilot -->
+          <g id="demo-node-2">
+            <circle id="demo-circle-2" class="demo-stepper-circle"
+              cx="810" cy="960" r="28" fill="transparent" stroke="#C4C4C4" />
+            <text id="demo-number-2" class="demo-stepper-number"
+              x="810" y="960" fill="#757575">02</text>
+            <text id="demo-label-2" class="demo-stepper-label"
+              x="810" y="1018" fill="#757575">In-session Co-pilot</text>
+          </g>
+
+          <!-- Node 03: Post-session Companion -->
+          <g id="demo-node-3">
+            <circle id="demo-circle-3" class="demo-stepper-circle"
+              cx="1110" cy="960" r="28" fill="transparent" stroke="#C4C4C4" />
+            <text id="demo-number-3" class="demo-stepper-number"
+              x="1110" y="960" fill="#757575">03</text>
+            <text id="demo-label-3" class="demo-stepper-label"
+              x="1110" y="1018" fill="#757575">Post-session Companion</text>
+          </g>
+
+          <!-- Node 04: Repeat -->
+          <g id="demo-node-4">
+            <circle id="demo-circle-4" class="demo-stepper-circle"
+              cx="1410" cy="960" r="28" fill="transparent" stroke="#C4C4C4" />
+            <text id="demo-number-4" class="demo-stepper-number"
+              x="1410" y="960" fill="#757575">04</text>
+            <text id="demo-label-4" class="demo-stepper-label"
+              x="1410" y="1018" fill="#757575">Repeat</text>
+          </g>
+        </g>
 
         <!-- Scene B: The Founder's Story -->
         <g id="scene-b" opacity="0">
@@ -1491,6 +1590,12 @@
         <div class="phase-input-group"><label>Close</label><input type="number" id="dur-close" value="70.0" min="70"
             step="0.5">
         </div>
+        <span style="margin-left: 12px; color: #58D4DE;">|</span>
+        <span>DEMO:</span>
+        <div class="phase-input-group"><label>Demo1</label><input type="number" id="dur-demo1" value="5.0" step="0.5"></div>
+        <div class="phase-input-group"><label>Demo2</label><input type="number" id="dur-demo2" value="5.0" step="0.5"></div>
+        <div class="phase-input-group"><label>Demo3</label><input type="number" id="dur-demo3" value="5.0" step="0.5"></div>
+        <div class="phase-input-group"><label>Demo4</label><input type="number" id="dur-demo4" value="5.0" step="0.5"></div>
       </div>
     </div>
   </div>
@@ -1548,7 +1653,11 @@
         system: getVal('dur-system', 18.0),     // System Reveal
         admin: getVal('dur-admin', 14.0),       // Admin/Researcher Views
         evolve: getVal('dur-evolve', 10.0),     // System Evolution (2:18-2:28)
-        close: Math.max(70.0, getVal('dur-close', 70.0)) // Economic Transformation + Close extended so total defaults to 3:30
+        close: Math.max(70.0, getVal('dur-close', 70.0)), // Economic Transformation + Close extended so total defaults to 3:30
+        demo1: getVal('dur-demo1', 5.0),
+        demo2: getVal('dur-demo2', 5.0),
+        demo3: getVal('dur-demo3', 5.0),
+        demo4: getVal('dur-demo4', 5.0)
       };
 
       // Sub-phase durations within Problem Setup (proportional to 28s total)
@@ -1588,7 +1697,11 @@
 
         // Thesis + Rationale [0:28-0:50]
         thesisStart: t, thesisEnd: t += d.thesis,
-        // Phase 1: Pre-session Training [0:50-1:05]  
+        // Video Demo Stepper (between thesis and ecosystem)
+        demoStart: t,
+        demoEnd: t += (d.demo1 + d.demo2 + d.demo3 + d.demo4 + 1.5), // +1.5s for fade-in/hold/fade-out
+        demo1: d.demo1, demo2: d.demo2, demo3: d.demo3, demo4: d.demo4,
+        // Phase 1: Pre-session Training [0:50-1:05]
         phase1Start: t, phase1End: t += d.phase1,
         // Phase 2: During Session [1:05-1:25]
         phase2Start: t, phase2End: t += d.phase2,
@@ -1925,6 +2038,17 @@
       gsap.set('.dashboard-chart', { opacity: 0 });
       gsap.set('#phase-indicator', { opacity: 0 });
       gsap.set('#final-frame-container', { opacity: 0 });
+
+      // Reset Video Demo Stepper
+      gsap.set('#demo-stepper', { opacity: 0 });
+      for (let i = 1; i <= 4; i++) {
+        gsap.set(`#demo-circle-${i}`, { attr: { fill: 'transparent', stroke: '#C4C4C4' } });
+        gsap.set(`#demo-number-${i}`, { fill: '#757575' });
+        gsap.set(`#demo-label-${i}`, { fill: '#757575', fontWeight: 400 });
+      }
+      gsap.set(['#demo-fill-1', '#demo-fill-2', '#demo-fill-3'], {
+        attr: { 'stroke-dashoffset': 244 }
+      });
 
       // Reset Thesis Animation Elements
       gsap.set('#thesis-animation-container', { opacity: 1 });
@@ -2565,8 +2689,77 @@
 
       // 8. BLANK PAUSE (5 seconds)
 
-      // 9. SCENE TRANSITION: A -> B
-      const transitionStart = dissolveStart + 6.5; // 1.5 (dissolve) + 5 (pause)
+      // ========================================
+      // 9. VIDEO DEMO STEPPER
+      // ========================================
+      const demoStart = dissolveStart + 6.5; // after 1.5s dissolve + 5s intentional blank
+
+      const DEMO_LINE_LEN = 244; // px, matches stroke-dasharray on fill lines
+      const demoDurations = [T.demo1, T.demo2, T.demo3, T.demo4];
+
+      // 9a. Fade in stepper group (0.5s)
+      tl.to('#demo-stepper', {
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power2.out'
+      }, demoStart);
+
+      // 9b. Sequential phase activations
+      let demoPhaseTime = demoStart + 0.5; // after fade-in completes
+
+      for (let i = 0; i < 4; i++) {
+        const n = i + 1; // 1-indexed node
+        const dur = demoDurations[i];
+
+        // Activate node circle: transparent -> teal fill, grey stroke -> none
+        tl.to(`#demo-circle-${n}`, {
+          attr: { fill: '#58D4DE', stroke: 'none' },
+          duration: 0.3,
+          ease: 'power2.out'
+        }, demoPhaseTime);
+
+        // Activate node number: grey -> white
+        tl.to(`#demo-number-${n}`, {
+          fill: 'white',
+          duration: 0.3,
+          ease: 'power2.out'
+        }, demoPhaseTime);
+
+        // Activate label: grey -> teal, weight 400 -> 500
+        tl.to(`#demo-label-${n}`, {
+          fill: '#58D4DE',
+          fontWeight: 500,
+          duration: 0.3,
+          ease: 'power2.out'
+        }, demoPhaseTime);
+
+        // Fill progress line to next node (linear, over full phase duration)
+        // No outgoing line from node 4
+        if (i < 3) {
+          tl.to(`#demo-fill-${n}`, {
+            attr: { 'stroke-dashoffset': 0 },
+            duration: dur,
+            ease: 'none' // linear fill
+          }, demoPhaseTime);
+        }
+
+        demoPhaseTime += dur;
+      }
+
+      // 9c. Hold 0.5s after final phase, then fade out (0.5s)
+      const demoFadeOut = demoPhaseTime + 0.5;
+      tl.to('#demo-stepper', {
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power2.in'
+      }, demoFadeOut);
+
+      const demoSectionEnd = demoFadeOut + 0.5;
+
+      // ========================================
+      // 10. SCENE TRANSITION: A -> B
+      // ========================================
+      const transitionStart = demoSectionEnd;
 
       tl.to([els.leftCurve], {
         x: '-100vw', opacity: 0, duration: 1.2, ease: 'power2.in', stagger: 0.01
