@@ -2260,7 +2260,7 @@
       // ----------------------------------------
       // Deterministic label lifecycle (no clearProps) to prevent missing-text regressions after seek/rebuild.
       tl.set(curveTextTargets, { opacity: 0, x: 0 }, T.p3Start);
-      tl.to('#graph-title', { opacity: 1, x: 0, duration: 0.4 }, T.p3Start + 0.2);
+      tl.to('#graph-title', { opacity: 1, x: 0, duration: 0.32 }, T.p3Start + 0.2);
       tl.to(['#threshold-label', '#threshold'], { opacity: 1, x: 0, duration: 0.5 }, T.p4Start);
       tl.set('#gap-label', { opacity: 0, x: 0 }, T.p4Start + 0.01);
 
@@ -2300,14 +2300,17 @@
           height: maxHeight  // Grow height to full
         },
         duration: 1.5,
-        ease: 'power2.out'
+        ease: 'circ.out'
       }, T.p4Start + 1.7);
 
-      tl.to(els.area, { opacity: 0.5, duration: 1.5, ease: 'power2.out' }, T.p4Start + 1.7);
+      tl.to(els.area, { opacity: 0.5, duration: 1.5, ease: 'circ.out' }, T.p4Start + 1.7);
       // Area fill ends at T.p4Start + 3.2
 
-      // Pause to let area fully fill
-      tl.to({}, { duration: 0.5 }, T.p4Start + 3.2);
+      // Short "breath" after the fill lands before the crisis shift.
+      const areaFillComplete = T.p4Start + 3.2;
+      tl.to(els.area, { opacity: 0.56, duration: 0.14, ease: 'sine.inOut' }, areaFillComplete + 0.08);
+      tl.to(els.area, { opacity: 0.5, duration: 0.18, ease: 'sine.inOut' }, areaFillComplete + 0.22);
+      tl.to({}, { duration: 0.5 }, areaFillComplete);
 
       // 3. Shift to Crisis (Red) - push curve LEFT with colored area shrinking
       // Let it FULLY end its animation
@@ -2315,20 +2318,21 @@
       const crisisD = generateAreaPath(CONSTANTS.CRISIS_PEAK);
       const crisisMinY = bellCurveY(CONSTANTS.CRISIS_PEAK, CONSTANTS.CRISIS_PEAK); // Top of crisis curve
       const crisisMaxHeight = CONSTANTS.BASELINE_Y - crisisMinY; // Full height for crisis curve
+      const crisisShiftStart = areaFillComplete + 0.5;
 
       allDots.forEach((dot, i) => {
         dot.y = crisisY[i];
         const props = dot.isPath ? { attr: { d: generateCirclePath(dot.x, dot.y, 5), fill: COLORS.crisis } }
           : { attr: { cy: dot.y, fill: COLORS.crisis } };
-        tl.to(dot.el, { ...props, duration: 2.0, ease: 'power2.inOut' }, T.p4Start + 3.7);
+        tl.to(dot.el, { ...props, duration: 2.0, ease: 'sine.inOut' }, crisisShiftStart);
       });
 
       // Update area path and adjust clipPath rectangle for crisis curve height
       tl.to(els.area, {
         attr: { d: crisisD, fill: COLORS.crisis },
         duration: 2.0,
-        ease: 'power2.inOut'
-      }, T.p4Start + 3.7);
+        ease: 'sine.inOut'
+      }, crisisShiftStart);
 
       // Adjust clipPath rectangle to match crisis curve height (area shrinks)
       tl.to(els.areaClipRect, {
@@ -2337,52 +2341,54 @@
           height: crisisMaxHeight
         },
         duration: 2.0,
-        ease: 'power2.inOut'
-      }, T.p4Start + 3.7);
-      // Crisis shift ends at T.p4Start + 5.7
+        ease: 'sine.inOut'
+      }, crisisShiftStart);
+      const crisisShiftEnd = crisisShiftStart + 2.0;
 
       // Pause to let crisis shift fully complete
-      tl.to({}, { duration: 0.5 }, T.p4Start + 5.7);
+      tl.to({}, { duration: 0.5 }, crisisShiftEnd);
 
       // 4. ALL Crisis Headlines Pop-Up - one after another, finish, then shrink and exit
-      // Animate all 9 crisis images appearing and overlaying/taking over screen
+      // Use accelerating staggers for a stronger cadence ramp.
+      const crisisImageCount = crisisImageEls.length;
+      const crisisEnterStart = crisisShiftEnd + 0.5;
+      const crisisEnterDuration = 0.42;
+      const crisisEnterOffsets = buildAcceleratingOffsets(crisisImageCount, 0.2, 0.08);
       crisisImageEls.forEach((img, i) => {
         tl.to([img.el, img.imageEl, img.rectEl], {
           opacity: 1,
           scale: 1,
-          duration: 0.6,
-          ease: 'back.out(1.7)',
+          duration: crisisEnterDuration,
+          ease: 'expo.out',
           transformOrigin: '50% 50%'
-        }, T.p4Start + 6.2 + (i * 0.15));
+        }, crisisEnterStart + crisisEnterOffsets[i]);
       });
-      // All images appear by T.p4Start + 6.2 + (9 * 0.15) + 0.6 = T.p4Start + 8.15
-
-      // Pause to let all images be visible
-      tl.to({}, { duration: 1.0 }, T.p4Start + 8.15);
+      const crisisEnterEnd = crisisEnterStart + crisisEnterOffsets[crisisImageCount - 1] + crisisEnterDuration;
+      tl.to({}, { duration: 1.15 }, crisisEnterEnd);
 
       // Crisis images shrink to their OWN centers (not all to same center)
-      // Animate both the group and its children
-      crisisImageEls.forEach(img => {
+      const crisisExitStart = crisisEnterEnd + 1.15;
+      const crisisExitDuration = 0.95;
+      const crisisExitOffsets = buildAcceleratingOffsets(crisisImageCount, 0.16, 0.06);
+      crisisImageEls.forEach((img, i) => {
         tl.to([img.el, img.imageEl, img.rectEl], {
           scale: 0,  // Shrink to own center (transformOrigin already set to 50% 50%)
-          duration: 1.0,
-          ease: 'power2.inOut',
+          duration: crisisExitDuration,
+          ease: 'power3.inOut',
           transformOrigin: '50% 50%'
-        }, T.p4Start + 9.15 + (crisisImageEls.indexOf(img) * 0.1));
+        }, crisisExitStart + crisisExitOffsets[i]);
       });
-      // All crisis images shrink by T.p4Start + 9.15 + (9 * 0.1) + 1.0 = T.p4Start + 11.05
+      const crisisExitEnd = crisisExitStart + crisisExitOffsets[crisisImageCount - 1] + crisisExitDuration;
 
       // Pause to ensure ALL crisis images fully exit before tutoring works image appears
-      tl.to({}, { duration: 0.5 }, T.p4Start + 11.05);
-
-      tl.to({}, { duration: 2 }, T.p4Start + 11.85);
+      tl.to({}, { duration: 0.5 }, crisisExitEnd);
 
       // ----------------------------------------
       // PHASE 5: SOLUTION (2 Steps + Proxy Sync)
       // ----------------------------------------
       // Tutoring works image appears AFTER all crisis images fully disappear
-      // Crisis images exit by T.p4Start + 11.05, caption appears, pause ends at T.p4Start + 11.85
-      const tutoringImageStart = T.p4Start + 11.85;
+      const tutoringImageStart = crisisExitEnd + 0.5;
+      tl.to({}, { duration: 2 }, tutoringImageStart);
 
       tutoringImageEls.forEach((img, i) => {
         tl.to([img.el, img.imageEl, img.rectEl], {
@@ -2393,13 +2399,13 @@
           transformOrigin: '50% 50%'
         }, tutoringImageStart);
       });
-      // Tutoring image fully appears by tutoringImageStart + 0.6 = T.p4Start + 12.45
+      // Tutoring image fully appears by tutoringImageStart + 0.6
 
       // Pause to let tutoring image be fully visible
-      tl.to({}, { duration: 0.5 }, T.p4Start + 12.45);
+      tl.to({}, { duration: 0.5 }, tutoringImageStart + 0.6);
 
       // NOW start curve animation - AFTER tutoring image fully appears
-      const curveAnimationStart = T.p4Start + 12.45;
+      const curveAnimationStart = tutoringImageStart + 0.6;
 
       const proxy = { peak: CONSTANTS.CRISIS_PEAK };
       // Helper to update everything based on peak
@@ -2453,8 +2459,8 @@
       // Narrative: "We have the solution..."
       tl.to(proxy, {
         peak: 1020,
-        duration: 1.2,
-        ease: 'back.out(1.2)',
+        duration: 1.1,
+        ease: 'sine.inOut',
         onUpdate: updateGraph
       }, curveAnimationStart);
 
@@ -2464,8 +2470,8 @@
       // Narrative: "It pushes the curve even further to the right."
       tl.to(proxy, {
         peak: 1500,
-        duration: 1.5,
-        ease: 'back.out(1.2)',
+        duration: 1.4,
+        ease: 'sine.inOut',
         onUpdate: updateGraph
       }, curveAnimationStart + 2.0);
 
@@ -2587,16 +2593,36 @@
       // 3. Dots Exit & Graph Text Fades
       const aiDots = Array.from(els.leftCurve.querySelectorAll('circle, path'));
       const humanDots = Array.from(els.rightCurve.querySelectorAll('circle, path'));
+      const getNodeVisualX = (node) => {
+        const cx = node.getAttribute('cx');
+        if (cx !== null) return parseFloat(cx);
+        const box = node.getBBox();
+        return box.x + (box.width / 2);
+      };
+      const aiDotsOrdered = [...aiDots].sort((a, b) => getNodeVisualX(b) - getNodeVisualX(a));
+      const humanDotsOrdered = [...humanDots].sort((a, b) => getNodeVisualX(a) - getNodeVisualX(b));
 
       if (aiDots.length > 0) {
-        tl.to(aiDots, { x: -500, opacity: 0, duration: 1.5, ease: 'power2.in' }, dotsExitStart);
+        tl.to(aiDotsOrdered, {
+          x: -500,
+          opacity: 0,
+          duration: 1.4,
+          ease: 'power3.in',
+          stagger: 0.018
+        }, dotsExitStart);
       }
       if (humanDots.length > 0) {
-        tl.to(humanDots, { x: 500, opacity: 0, duration: 1.5, ease: 'power2.in' }, dotsExitStart);
+        tl.to(humanDotsOrdered, {
+          x: 500,
+          opacity: 0,
+          duration: 1.4,
+          ease: 'power3.in',
+          stagger: 0.018
+        }, dotsExitStart);
       }
 
       // Fade graph + access-gap elements together as dots exit
-      tl.to('#graph-title', { opacity: 0, duration: 0.8 }, dotsExitStart);
+      tl.to('#graph-title', { opacity: 0, duration: 1.05, ease: 'power1.inOut' }, dotsExitStart);
       tl.to([els.gapRect, '#gap-label', '#threshold', '#threshold-label'], {
         opacity: 0,
         duration: 1.5,
@@ -2641,30 +2667,40 @@
       // Stagger badges appearing - each with unique rotation
       badgeAnimations.forEach((badge, i) => {
         const pauseOffset = i >= 3 ? aiToHumanPause : 0; // pause after AI's 3 badges
-        tl.to(badge.id, {
+        const badgeStart = badgesStart + i * badgeStagger + pauseOffset;
+        const settleSign = badge.rotation >= 0 ? 1 : -1;
+        tl.fromTo(badge.id, {
+          opacity: 0,
+          scale: 0.88,
+          rotation: badge.rotation + (settleSign * 9),
+          y: 6
+        }, {
           opacity: 1,
           scale: 1.0,
           rotation: badge.rotation,
-          duration: 0.5,
-          ease: 'back.out(1.7)'
-        }, badgesStart + i * badgeStagger + pauseOffset);
+          y: 0,
+          duration: 0.48,
+          ease: 'back.out(1.9)'
+        }, badgeStart);
+        tl.to(badge.id, { rotation: badge.rotation - (settleSign * 2), duration: 0.18, ease: 'sine.out' }, badgeStart + 0.48);
+        tl.to(badge.id, { rotation: badge.rotation, duration: 0.2, ease: 'sine.inOut' }, badgeStart + 0.66);
       });
 
       // Gap shrinks slightly slower than badges appear for a more gradual feel
-      const badgesTotalDuration = badgeStagger * (badgeAnimations.length - 1) + aiToHumanPause + 0.5;
+      const badgesTotalDuration = badgeStagger * (badgeAnimations.length - 1) + aiToHumanPause + 0.86;
       const gapShrinkDuration = badgesTotalDuration + 1.5; // ~3.75s - slower pace
       tl.to(els.gapRect, {
         scaleX: 0.15,
         opacity: 0.1,
         duration: gapShrinkDuration,
-        ease: 'power1.inOut',
+        ease: 'sine.inOut',
         transformOrigin: '50% 50%'
       }, badgesStart);
 
       tl.to('#gap-label', {
         opacity: 0,
         duration: gapShrinkDuration,
-        ease: 'power1.inOut'
+        ease: 'sine.inOut'
       }, badgesStart);
 
       // 6. Hold (1.0s after gap finishes shrinking)
@@ -2921,9 +2957,9 @@
           transformOrigin: "50% 50%"
         },
         {
-          scale: 2.2,
-          duration: 1.8,
-          ease: 'power3.out'
+          scale: 2.05,
+          duration: 1.45,
+          ease: 'power4.out'
         },
         sceneBStart
       );
@@ -2931,14 +2967,14 @@
       // Smoothly settle from the overshoot to final center size with no pause.
       tl.to(els.centralNode, {
         scale: 1.0,
-        duration: 2.0,
-        ease: 'power2.inOut'
-      }, sceneBStart + 1.8);
+        duration: 1.15,
+        ease: 'expo.out'
+      }, sceneBStart + 1.45);
 
       // --- STEP 2: The Setup (0:45 - 0:52) ---
       // Narrative: "Each contributes what they have. Each receives what they need."
 
-      const setupStart = sceneBStart + 3.8;
+      const setupStart = sceneBStart + 3.0;
 
       // Founder is already settled to 1.0 by setupStart.
 
@@ -2952,19 +2988,27 @@
       const nSchools = document.getElementById('node-schools');
       const nTutors = document.getElementById('node-tutors');
 
-      // Set explicit transform origins
-      tl.set(nFoundations, { transformOrigin: "center center", scale: 0, opacity: 1 }, setupStart);
-      tl.set(nTutors, { transformOrigin: "center center", scale: 0, opacity: 1 }, setupStart);
-      tl.set(nSchools, { transformOrigin: "center center", scale: 0, opacity: 1 }, setupStart);
-      tl.set(nResearchers, { transformOrigin: "center center", scale: 0, opacity: 1 }, setupStart);
+      const stakeholderNodes = [
+        { node: nFoundations, fromX: -42, fromY: -26 },
+        { node: nTutors, fromX: 42, fromY: -20 },
+        { node: nResearchers, fromX: 42, fromY: 24 },
+        { node: nSchools, fromX: -42, fromY: 22 }
+      ];
 
-      const stakeholderNodes = [nFoundations, nResearchers, nSchools, nTutors];
-
-      tl.to(stakeholderNodes, {
+      tl.fromTo(stakeholderNodes.map(item => item.node), {
+        x: (i) => stakeholderNodes[i].fromX,
+        y: (i) => stakeholderNodes[i].fromY,
+        scale: 0.72,
+        opacity: 0,
+        transformOrigin: 'center center'
+      }, {
+        x: 0,
+        y: 0,
         scale: 1,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: 'back.out(1.7)'
+        opacity: 1,
+        duration: 0.72,
+        stagger: 0.14,
+        ease: 'back.out(1.45)'
       }, setupStart + 1.0);
 
       // --- STEP 3: The Value Flows (0:52 - 1:05) ---
@@ -2999,7 +3043,7 @@
         tl.to(path, {
           strokeDashoffset: 0,  // Fully revealed
           duration: 1.5,
-          ease: "power2.out"
+          ease: "power3.out"
         }, startTime);
 
         // Keep line motion deterministic (no perpetual speed loop).
@@ -3028,46 +3072,32 @@
         textContainer.appendChild(textEl);
 
         // Fade in icon and text (they PERSIST - no fade out)
-        tl.to(iconEl, { opacity: 1, duration: 0.4 }, startTime + 0.3);
-        tl.to(textEl, { opacity: 1, duration: 0.4 }, startTime + 0.3);
+        tl.to(iconEl, { opacity: 1, duration: 0.4, ease: 'sine.out' }, startTime + 0.3);
+        tl.to(textEl, { opacity: 1, duration: 0.4, ease: 'sine.out' }, startTime + 0.3);
 
       };
 
-      // Sequence (One at a time, 2.5s duration + 0.3s gap = 2.8s step)
+      const flowSequence = [
+        ["path-in-foundations", "fa-sack-dollar", "#F2C94C", "Funding"],
+        ["path-out-tutors", "fa-chalkboard-user", "#F2C94C", "Wages & Training"],
+        ["path-in-tutors", "fa-hand-holding-heart", "#58D4DE", "Teaching"],
+        ["path-out-schools", "fa-gift", "#27AE60", "Free Teaching"],
+        ["path-in-schools", "fa-users", "#58D4DE", "Students & Data"],
+        ["path-out-researchers", "fa-database", "#7F8C8D", "Insights"],
+        ["path-in-researchers", "fa-file-pdf", "#9B59B6", "Findings"],
+        ["path-out-foundations", "fa-chart-line", "#FF4F4F", "Validated Impact"]
+      ];
+
       let t = flowStart;
-      const step = 2.8;
-
-      // 1. Foundations invest funding
-      createFlow(t, "path-in-foundations", "fa-sack-dollar", "#F2C94C", "Funding");
-      t += step;
-
-      // 2. Tutors receive wages and training
-      createFlow(t, "path-out-tutors", "fa-chalkboard-user", "#F2C94C", "Wages & Training");
-      t += step;
-
-      // 3. Tutors provide teaching
-      createFlow(t, "path-in-tutors", "fa-hand-holding-heart", "#58D4DE", "Teaching");
-      t += step;
-
-      // 4. Schools receive it—completely free
-      createFlow(t, "path-out-schools", "fa-gift", "#27AE60", "Free Teaching");
-      t += step;
-
-      // 5. Schools share students and data
-      createFlow(t, "path-in-schools", "fa-users", "#58D4DE", "Students & Data");
-      t += step;
-
-      // 6. Researchers access insights
-      createFlow(t, "path-out-researchers", "fa-database", "#7F8C8D", "Insights");
-      t += step;
-
-      // 7. Researchers publish findings
-      createFlow(t, "path-in-researchers", "fa-file-pdf", "#9B59B6", "Findings");
-      t += step;
-
-      // 8. Foundations see validated impact
-      createFlow(t, "path-out-foundations", "fa-chart-line", "#FF4F4F", "Validated Impact");
-      t += step;
+      const flowStepStart = 2.95;
+      const flowStepEnd = 2.05;
+      flowSequence.forEach((flow, i) => {
+        const [pathId, iconClass, color, labelText] = flow;
+        createFlow(t, pathId, iconClass, color, labelText);
+        const cadenceRatio = flowSequence.length > 1 ? i / (flowSequence.length - 1) : 0;
+        const step = flowStepStart - ((flowStepStart - flowStepEnd) * Math.pow(cadenceRatio, 1.15));
+        t += step;
+      });
 
 
 
@@ -3550,9 +3580,9 @@
         tl.to(selector, {
           opacity: 1,
           scale: 1,
-          duration: 0.6,
-          ease: 'back.out(1.4)'
-        }, blobStart + (index * 0.08));
+          duration: 0.62,
+          ease: 'back.out(1.25)'
+        }, blobStart + (index * 0.16));
       });
 
       // Step 7: final hold (2:38.6-2:40).
@@ -3565,6 +3595,20 @@
     // ========================================
     // HELPERS
     // ========================================
+
+    function buildAcceleratingOffsets(count, startGap, endGap) {
+      const offsets = [];
+      let running = 0;
+      for (let i = 0; i < count; i++) {
+        offsets.push(running);
+        if (i < count - 1) {
+          const ratio = count > 1 ? i / (count - 1) : 0;
+          const gap = startGap + ((endGap - startGap) * ratio);
+          running += gap;
+        }
+      }
+      return offsets;
+    }
 
     /**
      * Starts the breathing pulse timeline on the four nodes (1.0 → 1.05 → 1.0, 2s cycle).
