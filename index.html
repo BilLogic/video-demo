@@ -1,0 +1,3446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Math Crisis — PLUS Animation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: #F9F7F2;
+      font-family: 'Lato', sans-serif;
+      padding: 20px;
+      margin: 0;
+      gap: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1600px;
+      overflow: hidden;
+    }
+
+    .svg-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #F9F7F2;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      border: 1px solid #ccc;
+    }
+
+    /* Icon container for motionPath animations */
+    #icon-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      /* Improve rendering crispness */
+      shape-rendering: geometricPrecision;
+    }
+
+    /* Crisp dots and stars */
+    #sparkles path,
+    .network-line,
+    circle,
+    path {
+      shape-rendering: geometricPrecision;
+    }
+
+
+    /* Typography */
+    .graph-title {
+      font-size: 32px;
+      fill: #222;
+      font-weight: 700;
+      text-anchor: middle;
+      opacity: 0;
+    }
+
+    .threshold-label {
+      font-size: 18px;
+      fill: #666;
+      font-weight: 700;
+      text-anchor: middle;
+      letter-spacing: 1px;
+      opacity: 0;
+    }
+
+    .gap-label {
+      font-size: 22px;
+      fill: #FF4F4F;
+      font-weight: 700;
+      text-anchor: middle;
+      letter-spacing: 2px;
+      opacity: 0;
+    }
+
+    .cost-number {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+      font-kerning: none;
+      font-feature-settings: "kern" 0;
+    }
+
+    /* Lines & Shapes */
+    .network-line {
+      stroke: #58D4DE;
+      stroke-width: 1.5;
+      fill: none;
+      opacity: 0.4;
+    }
+
+    .threshold-line {
+      stroke: #777;
+      stroke-width: 2;
+      stroke-dasharray: 8, 5;
+      opacity: 0;
+    }
+
+    .area-fill {
+      opacity: 0;
+    }
+
+    .gap-rect {
+      fill: rgba(255, 79, 79, 0.15);
+      opacity: 0;
+    }
+
+    /* UI Controls */
+    .controls-container {
+      width: 100%;
+      max-width: 1920px;
+      transition: max-height 0.3s ease;
+      overflow: hidden;
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      /* Ensure it sits above everything else */
+    }
+
+    .controls-container.collapsed {
+      max-height: 50px;
+    }
+
+    .controls-container:not(.collapsed) {
+      max-height: 500px;
+    }
+
+    .collapse-toggle {
+      width: 100%;
+      height: 50px;
+      background: rgba(40, 40, 40, 0.95);
+      border: none;
+      cursor: pointer;
+      color: #58D4DE;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .collapse-toggle:hover {
+      background: rgba(50, 50, 50, 0.95);
+    }
+
+    .controls-content {
+      background: rgba(40, 40, 40, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 20px 30px;
+    }
+
+    .control-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 16px;
+    }
+
+    .play-btn {
+      width: 48px;
+      height: 48px;
+      background: #58D4DE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #1a1a1a;
+    }
+
+    .play-btn .pause-icon {
+      display: none;
+    }
+
+    .play-btn.playing .play-icon {
+      display: none;
+    }
+
+    .play-btn.playing .pause-icon {
+      display: block;
+    }
+
+    .time-display {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 14px;
+      min-width: 100px;
+      text-align: center;
+    }
+
+    .scrubber {
+      flex: 1;
+      max-width: 600px;
+      height: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      z-index: 2000;
+      pointer-events: auto;
+    }
+
+    .scrubber::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background: #58D4DE;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(88, 212, 222, 0.5);
+      position: relative;
+      z-index: 2001;
+    }
+
+    /* Settings Panel */
+    .settings-panel {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .phase-input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .phase-input-group input {
+      width: 50px;
+      padding: 4px;
+      border-radius: 4px;
+      border: none;
+      text-align: center;
+    }
+
+    /* FontAwesome Icon Styles - Badge icons on exchange lines */
+    .fa-icon {
+      position: absolute;
+      font-size: 28px;
+      /* Icon size */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      /* Increased from 50px for more padding */
+      height: 60px;
+      /* Increased from 50px for more padding */
+      background: #F9F7F2;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 10;
+      opacity: 0;
+    }
+
+    .value-annotation {
+      font-size: 24px;
+      font-weight: 700;
+      fill: #333;
+      text-anchor: middle;
+      opacity: 0;
+      background: rgba(249, 247, 242, 0.9);
+      /* Subtle backing for readability if overlaps */
+      text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+    }
+
+    /* Final frame composition (2:34+) */
+    #final-frame-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 12;
+    }
+
+    #tagline-characters-container {
+      position: absolute;
+      inset: 0;
+      transform: none;
+      z-index: 2;
+    }
+
+    .tagline-char {
+      position: absolute;
+      display: block;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      transform: translateY(-15px) rotate(var(--char-rot, 0deg));
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+    }
+
+    #char-a {
+      left: 15.517%;
+      top: 12.624%;
+      width: 4.043%;
+      height: 8.658%;
+      --char-rot: 1deg;
+    }
+
+    #char-p {
+      left: 22.957%;
+      top: 25.071%;
+      width: 8.517%;
+      height: 20.232%;
+      --char-rot: -2deg;
+    }
+
+    #char-l {
+      left: 33.165%;
+      top: 24.845%;
+      width: 6.589%;
+      height: 19.739%;
+      --char-rot: 0deg;
+    }
+
+    #char-u {
+      left: 41.124%;
+      top: 25.328%;
+      width: 9.933%;
+      height: 20.800%;
+      --char-rot: -3deg;
+    }
+
+    #char-s {
+      left: 52.294%;
+      top: 24.030%;
+      width: 8.028%;
+      height: 20.636%;
+      --char-rot: -2deg;
+    }
+
+    #char-f {
+      left: 38.921%;
+      top: 53.684%;
+      width: 2.868%;
+      height: 10.155%;
+      --char-rot: 3deg;
+    }
+
+    #char-o {
+      left: 41.841%;
+      top: 56.968%;
+      width: 4.177%;
+      height: 7.594%;
+      --char-rot: -3.89deg;
+    }
+
+    #char-r {
+      left: 46.732%;
+      top: 56.784%;
+      width: 2.585%;
+      height: 7.254%;
+      --char-rot: -2.64deg;
+    }
+
+    #char-e {
+      left: 43.924%;
+      top: 72.817%;
+      width: 3.420%;
+      height: 6.581%;
+      --char-rot: -8deg;
+    }
+
+    #char-v {
+      left: 47.510%;
+      top: 72.120%;
+      width: 3.523%;
+      height: 6.114%;
+      --char-rot: -3.89deg;
+    }
+
+    #char-e2 {
+      left: 51.149%;
+      top: 71.807%;
+      width: 3.137%;
+      height: 6.138%;
+      --char-rot: -2.64deg;
+    }
+
+    #char-r2 {
+      left: 55.028%;
+      top: 71.510%;
+      width: 2.137%;
+      height: 5.995%;
+      --char-rot: -2.64deg;
+    }
+
+    #char-y {
+      left: 57.389%;
+      top: 71.911%;
+      width: 3.537%;
+      height: 7.844%;
+      --char-rot: -2.64deg;
+    }
+
+    #char-c {
+      left: 54.276%;
+      top: 87.211%;
+      width: 2.357%;
+      height: 4.957%;
+      --char-rot: -2.64deg;
+    }
+
+    #char-l2 {
+      left: 57.095%;
+      top: 85.168%;
+      width: 0.872%;
+      height: 6.760%;
+      --char-rot: -2.64deg;
+    }
+
+    #char-a2 {
+      left: 58.523%;
+      top: 87.197%;
+      width: 2.350%;
+      height: 4.979%;
+      --char-rot: -2.64deg;
+    }
+
+    #char-s2 {
+      left: 61.396%;
+      top: 87.215%;
+      width: 2.109%;
+      height: 4.941%;
+      --char-rot: -2.64deg;
+    }
+
+    #char-s3 {
+      left: 63.927%;
+      top: 87.214%;
+      width: 2.109%;
+      height: 4.941%;
+      --char-rot: -2.64deg;
+    }
+
+    .blob-item {
+      position: absolute;
+      opacity: 0;
+      transform: scale(0.8);
+      transform-origin: center;
+      width: auto;
+      height: auto;
+      will-change: transform, opacity;
+      z-index: 1;
+      object-fit: contain;
+    }
+
+    #blob-pencil {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      inset: 0;
+    }
+
+    .pencil-piece {
+      position: absolute;
+      display: block;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transform-origin: center;
+    }
+
+    .pencil-wrap {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pencil-inner {
+      position: relative;
+    }
+
+    .pencil-inner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    #pencil-p1-wrap {
+      left: 79.07%;
+      top: 43.35%;
+      width: 14.53%;
+      height: 23.91%;
+    }
+
+    #pencil-p1-inner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    #pencil-p1-art {
+      position: absolute;
+      inset: -11.8% -10.92%;
+    }
+
+    #pencil-p1-inner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    #pencil-p2-wrap {
+      left: 92.33%;
+      top: 49.96%;
+      width: 2.87%;
+      height: 6.14%;
+    }
+
+    #pencil-p2-inner {
+      width: 100%;
+      height: 100%;
+    }
+
+    #pencil-p3-wrap {
+      left: 95.18%;
+      top: 49.91%;
+      width: 1.32%;
+      height: 5.82%;
+    }
+
+    #pencil-p3-inner {
+      width: 100%;
+      height: 100%;
+    }
+
+    #pencil-p4-wrap {
+      left: 96.23%;
+      top: 49.91%;
+      width: 1.64%;
+      height: 5.82%;
+    }
+
+    #pencil-p4-inner {
+      width: 100%;
+      height: 100%;
+    }
+
+    #pencil-p4-inner img {
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    #pencil-p5-wrap {
+      left: 61.06%;
+      top: 84.63%;
+      width: 14.55%;
+      height: 23.60%;
+    }
+
+    #pencil-p5-inner {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    #pencil-p5-art {
+      position: absolute;
+      inset: -11.96% -10.91% -11.95% -10.91%;
+    }
+
+    #pencil-p5-inner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    #pencil-p6-wrap {
+      left: 20.36%;
+      top: 63.45%;
+      width: 21.52%;
+      height: 38.22%;
+    }
+
+    #pencil-p6-rot {
+      width: 100%;
+      height: 100%;
+      transform: rotate(15deg);
+      position: relative;
+    }
+
+    #pencil-p6-inner {
+      position: absolute;
+      left: 9.158%;
+      top: 9.193%;
+      width: 81.684%;
+      height: 81.615%;
+    }
+
+    #pencil-p6-art {
+      position: absolute;
+      inset: -9.05% -9.03%;
+    }
+
+    #pencil-p6-inner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    /* Pencil vector 07 */
+    #pencil-p7-wrap {
+      left: 5.201%;
+      top: 28.29%;
+      width: 7.82%;
+      height: 20.99%;
+    }
+
+    #pencil-p7-rot {
+      width: 100%;
+      height: 100%;
+      transform: rotate(90deg);
+      position: relative;
+    }
+
+    #pencil-p7-inner {
+      width: 150.981%;
+      height: 66.239%;
+      position: absolute;
+      left: -25.490%;
+      top: 16.881%;
+    }
+
+    #pencil-p7-art {
+      position: absolute;
+      inset: -20.3% -13.44% -20.29% -13.44%;
+    }
+
+    #pencil-p7-inner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    /* Pencil vector 08 */
+    #pencil-p8-wrap {
+      left: 0.417%;
+      top: 20.654%;
+      width: 5.988%;
+      height: 10.078%;
+    }
+
+    #pencil-p8-rot {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-51.07deg);
+      position: relative;
+    }
+
+    #pencil-p8-inner {
+      position: absolute;
+      left: 24.317%;
+      top: 4.019%;
+      width: 51.367%;
+      height: 91.962%;
+    }
+
+    /* Pencil vector 09 */
+    #pencil-p9-wrap {
+      left: 0.938%;
+      top: 21.819%;
+      width: 2.703%;
+      height: 4.557%;
+    }
+
+    #pencil-p9-rot {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-51.07deg);
+      position: relative;
+    }
+
+    #pencil-p9-inner {
+      position: absolute;
+      left: 24.028%;
+      top: 4.329%;
+      width: 51.944%;
+      height: 91.342%;
+    }
+
+    .pencil-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    #blob-1 {
+      left: 1.901%;
+      top: 74.213%;
+      width: 12.643%;
+    }
+
+    #blob-2 {
+      left: 12.188%;
+      top: 48.102%;
+      width: 13.932%;
+    }
+
+    #blob-3 {
+      left: 64.141%;
+      top: 2.917%;
+      width: 20.313%;
+    }
+
+    #blob-4 {
+      left: 70.250%;
+      top: 65.333%;
+      width: 10.286%;
+    }
+
+    #blob-5 {
+      left: 90.599%;
+      top: 60.926%;
+      width: 7.734%;
+    }
+
+    /* Dashboard Frame Styles */
+    .dashboard-frame {
+      fill: white;
+      stroke: #E0E0E0;
+      stroke-width: 1;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+    }
+
+    /* Stakeholder Background Circles */
+    .stakeholder-bg-circle {
+      fill: white;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+    }
+
+    .dashboard-content {
+      opacity: 0;
+    }
+
+    /* Phase Indicator Styles */
+    .phase-indicator-group {
+      opacity: 0;
+    }
+
+    .phase-circle {
+      stroke-width: 2;
+    }
+
+    .phase-circle.active {
+      fill: #2D9CDB;
+      stroke: none;
+    }
+
+    .phase-circle.inactive {
+      fill: transparent;
+      stroke: #C4C4C4;
+    }
+
+    .phase-number {
+      font-size: 14px;
+      font-weight: 600;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    .phase-number.active {
+      fill: white;
+    }
+
+    .phase-number.inactive {
+      fill: #757575;
+    }
+
+    .phase-label {
+      font-size: 12px;
+      text-anchor: middle;
+    }
+
+    .phase-label.active {
+      fill: #2D9CDB;
+      font-weight: 500;
+    }
+
+    .phase-label.inactive {
+      fill: #757575;
+      font-weight: 400;
+    }
+
+    .phase-line {
+      stroke: #C4C4C4;
+      stroke-width: 2;
+    }
+
+    /* AI and Human Shape Styles */
+    .ai-human-container {
+      opacity: 0;
+    }
+
+    .ai-dot {
+      fill: #2D6A6A;
+    }
+
+    .human-dot {
+      fill: #E8A13A;
+    }
+
+    .capability-label {
+      font-size: 14px;
+      text-anchor: middle;
+      opacity: 0;
+    }
+
+    .capability-label.ai {
+      fill: #2D6A6A;
+    }
+
+    .capability-label.human {
+      fill: #E8A13A;
+    }
+
+    /* Dashboard UI Elements */
+    .dashboard-panel {
+      fill: #F8F9FA;
+      stroke: #E9ECEF;
+      stroke-width: 1;
+      rx: 4;
+    }
+
+    .dashboard-chart {
+      opacity: 0;
+    }
+
+    .dashboard-text {
+      font-size: 12px;
+      fill: #495057;
+      opacity: 0;
+    }
+
+    /* Animation Replacement Styles */
+    .fa-icon-large {
+      position: absolute;
+      font-size: min(9.4vw, 180px);
+      /* Responsive font size */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center;
+      opacity: 0;
+      z-index: 10;
+    }
+
+    .capability-badge {
+      position: absolute;
+      padding: min(0.95vw, 18px) min(1.56vw, 30px);
+      border-radius: 36px;
+      font-size: min(1.26vw, 24px);
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      white-space: nowrap;
+      opacity: 0;
+      font-family: 'Lato', sans-serif;
+      z-index: 15;
+    }
+
+    .capability-badge.ai {
+      background: linear-gradient(135deg, #F0E5FF 0%, #F5EDFF 100%);
+      border: 2px solid #B57EDC;
+      color: #6B2FA0;
+    }
+
+    .capability-badge.human {
+      background: linear-gradient(135deg, #E8F6FC 0%, #F0F9FD 100%);
+      border: 2px solid #5DADE2;
+      color: #0472A8;
+    }
+
+    .icon-caption {
+      position: absolute;
+      font-family: 'Lato', sans-serif;
+      font-size: min(1.26vw, 24px);
+      font-weight: 700;
+      line-height: 1;
+      opacity: 0;
+      z-index: 14;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="svg-wrapper">
+      <svg id="canvas" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+            <feMerge>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <clipPath id="area-clip">
+            <rect id="area-clip-rect" x="1152" y="840" width="648" height="0" />
+          </clipPath>
+          <clipPath id="founder-clip">
+            <!-- Larger clip for 180px node (scaled 3x to 540) -->
+            <circle cx="960" cy="540" r="170" />
+          </clipPath>
+          <!-- Phase 2 node gradients -->
+          <radialGradient id="grad-gold" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#F2C94C" />
+            <stop offset="100%" stop-color="#E6A623" />
+          </radialGradient>
+          <radialGradient id="grad-purple" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#9B59B6" />
+            <stop offset="100%" stop-color="#7D3C98" />
+          </radialGradient>
+          <radialGradient id="grad-blue" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#58D4DE" />
+            <stop offset="100%" stop-color="#2C98A8" />
+          </radialGradient>
+          <radialGradient id="grad-coral" cx="30%" cy="30%" r="70%">
+            <stop offset="0%" stop-color="#FF6B6B" />
+            <stop offset="100%" stop-color="#C92A2A" />
+          </radialGradient>
+          <filter id="node-glow-gold" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#F2C94C" flood-opacity="0.3" />
+          </filter>
+          <filter id="node-glow-purple" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#9B59B6" flood-opacity="0.3" />
+          </filter>
+          <filter id="node-glow-blue" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#58D4DE" flood-opacity="0.3" />
+          </filter>
+          <filter id="node-glow-coral" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#FF6B6B" flood-opacity="0.3" />
+          </filter>
+          <linearGradient id="value-line-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F2C94C" />
+            <stop offset="50%" stop-color="#9B59B6" />
+            <stop offset="100%" stop-color="#7D3C98" />
+          </linearGradient>
+        </defs>
+
+        <!-- Scene A Environment -->
+        <g class="scene-environment">
+          <path id="area-fill" fill="#58D4DE" opacity="0.5" />
+          <line id="baseline" x1="120" y1="840" x2="1800" y2="840" stroke="#ddd" stroke-width="1" opacity="0" />
+          <text id="graph-title" class="graph-title" x="960" y="72">K-12 Global Math Proficiency</text>
+          <line id="threshold" class="threshold-line" x1="1152" y1="120" x2="1152" y2="864" />
+          <text id="threshold-label" class="threshold-label" x="1152" y="900">PASSING GRADE</text>
+          <rect id="gap-rect" class="gap-rect" x="690" y="180" width="462" height="660" />
+          <text id="gap-label" class="gap-label" x="921" y="528">THE ACCESS GAP</text>
+        </g>
+
+        <g id="network-lines"></g>
+
+        <!-- Scene A Curve Groups -->
+        <g class="left-curve-group" id="left-curve-group"></g>
+        <g class="right-curve-group" id="right-curve-group"></g>
+
+        <g id="sparkles"></g>
+
+        <g id="overlays"></g>
+
+        <!-- Scene B: The Founder's Story -->
+        <g id="scene-b" opacity="0">
+
+          <!-- Highway Paths (Curved, to be animated) -->
+          <!-- Each pair uses different curve directions to avoid overlap -->
+          <!-- BIGGER CURVES: Control points pushed further out -->
+          <g id="highway-paths" opacity="1" fill="none" stroke-width="3" stroke-dasharray="15,10">
+
+            <!-- Foundations (Top-Left @ 280, 200) -->
+            <!-- IN: Big arc curving DOWN and RIGHT -->
+            <path id="path-in-foundations" d="M 280 200 Q 200 540, 900 480" stroke="#F2C94C" opacity="0" />
+            <!-- OUT: Big arc curving UP and LEFT -->
+            <path id="path-out-foundations" d="M 900 480 Q 560 200, 280 200" stroke="#FF4F4F" opacity="0" />
+
+            <!-- Tutors (Top-Right @ 1640, 200) -->
+            <!-- IN: Big arc curving DOWN and LEFT -->
+            <path id="path-in-tutors" d="M 1640 200 Q 1720 540, 1020 480" stroke="#58D4DE" opacity="0" />
+            <!-- OUT: Big arc curving UP and RIGHT -->
+            <path id="path-out-tutors" d="M 1020 480 Q 1360 200, 1640 200" stroke="#F2C94C" opacity="0" />
+
+            <!-- Schools (Bottom-Left @ 280, 880) -->
+            <!-- IN: Big arc curving UP and RIGHT -->
+            <path id="path-in-schools" d="M 280 880 Q 200 540, 900 600" stroke="#58D4DE" opacity="0" />
+            <!-- OUT: Big arc curving DOWN and LEFT -->
+            <path id="path-out-schools" d="M 900 600 Q 560 880, 280 880" stroke="#27AE60" opacity="0" />
+
+            <!-- Researchers (Bottom-Right @ 1640, 880) -->
+            <!-- IN: Big arc curving UP and LEFT -->
+            <path id="path-in-researchers" d="M 1640 880 Q 1720 540, 1020 600" stroke="#9B59B6" opacity="0" />
+            <!-- OUT: Big arc curving DOWN and RIGHT -->
+            <path id="path-out-researchers" d="M 1020 600 Q 1360 880, 1640 880" stroke="#7F8C8D" opacity="0" />
+          </g>
+
+          <!-- EVOLUTION PHASE: Grouped Paths (MOVED HERE for Layering - Behind Nodes) -->
+          <!-- Anchor at Right Edge of Middle School (S2): x=330 (220 center + 110 half-width) -->
+          <!-- Cluster Center Y (S2 Center): 470 -->
+          <g id="evolution-paths" fill="none" stroke-width="3" stroke-dasharray="15,10">
+            <path id="path-payment-group" d="M 330 470 Q 615 470, 900 480" stroke="#27AE60" opacity="0" />
+            <path id="path-data-group" d="M 330 470 Q 615 800, 900 640" stroke="#58D4DE" opacity="0" />
+            <path id="path-teaching-group" d="M 900 480 Q 615 150, 330 470" stroke="#58D4DE" opacity="0" />
+          </g>
+
+
+
+          <!-- Central Node (Founder) - Base Size 180px visually (image 360px scaled down or just huge) -->
+          <!-- User wants 360px visual size initially, or just massive. -->
+          <!-- Let's make the base image 360px (r=180) and scale it. -->
+          <!-- Wait, clipPath needs to match. -->
+          <g id="central-node" transform-origin="960 540">
+            <!-- No background circle/stroke per user request -->
+            <!-- Centered image 324x324 (90% of original 360) -->
+            <image id="central-node-image" href="stakeholder illustrations/plus.png" x="798" y="378" width="324"
+              height="324" />
+            <!-- Platform Label (hidden initially, revealed on shrink) -->
+            <text id="central-node-label" x="960" y="730" text-anchor="middle" font-size="28" font-weight="bold"
+              fill="#58D4DE" opacity="0">PLUS Tutoring Platform</text>
+          </g>
+
+          <!-- Ecosystem Nodes (Stakeholders) - Size 280px -->
+          <g class="ecosystem-nodes">
+            <!-- Foundations: Top-Left (280, 200) - SHIFTED UP -->
+            <g id="node-foundations" opacity="0">
+              <!-- Background circle: center 280,200, radius 125 (1.25x of 100) -->
+              <circle class="stakeholder-bg-circle" cx="280" cy="200" r="125" />
+              <!-- Illustration 200px (1.25x of 160) inside circle. TL = 280-100=180, 200-100=100 -->
+              <image href="stakeholder illustrations/foundations.png" x="180" y="90" width="200" height="200" />
+              <text x="280" y="290" text-anchor="middle" font-size="22" font-weight="bold"
+                fill="#333">Foundations</text>
+            </g>
+            <!-- Tutors: Top-Right (1640, 200) - SHIFTED UP -->
+            <g id="node-tutors" opacity="0">
+              <!-- Background circle: center 1640,200, radius 125 (1.25x) -->
+              <circle class="stakeholder-bg-circle" cx="1640" cy="200" r="125" />
+              <!-- Illustration 200px (1.25x). TL = 1640-100=1540, 200-100=100 -->
+              <image href="stakeholder illustrations/college tutors.png" x="1540" y="90" width="200" height="200" />
+              <text x="1640" y="290" text-anchor="middle" font-size="22" font-weight="bold" fill="#333">Tutors</text>
+            </g>
+            <!-- Schools: Bottom-Left (280, 880) - X ALIGNED with Foundations -->
+            <g id="node-schools" opacity="0">
+              <!-- Background circle: center 280,880, radius 125 (250px) -> grows to r=140 (280px) -->
+              <circle id="schools-bg-circle" class="stakeholder-bg-circle" cx="280" cy="880" r="125" />
+              <!-- Illustration 200px (1.25x). TL = 280-100=180, 880-100=780 -->
+              <image class="school-illustration" href="stakeholder illustrations/school &amp; students.png" x="180"
+                y="770" width="200" height="200" />
+              <text x="280" y="970" text-anchor="middle" font-size="22" font-weight="bold" fill="#333">Schools</text>
+            </g>
+            <!-- Researchers: Bottom-Right (1640, 880) - X ALIGNED with Tutors -->
+            <g id="node-researchers" opacity="0">
+              <!-- Background circle: center 1640,880, radius 125 (1.25x) -->
+              <circle class="stakeholder-bg-circle" cx="1640" cy="880" r="125" />
+              <!-- Illustration 200px (1.25x). TL = 1640-100=1540, 880-100=780 -->
+              <image href="stakeholder illustrations/researchers.png" x="1540" y="770" width="200" height="200" />
+              <text x="1640" y="970" text-anchor="middle" font-size="22" font-weight="bold"
+                fill="#333">Researchers</text>
+            </g>
+          </g>
+
+          <!-- EVOLUTION PHASE: Satellite Schools inside #node-schools circle (hidden initially) -->
+          <!-- All 4 schools at 80px size. Final circle: 280px diameter, center (280, 880) -->
+          <!-- Grid positions: ±49px from center for 280px circle -->
+          <g id="satellite-schools">
+            <!-- Satellite 1: Top-Left = center (280-49, 880-49) = (231, 831) -->
+            <g id="satellite-school-1" opacity="0">
+              <image href="stakeholder illustrations/school &amp; students.png" x="191" y="791" width="80"
+                height="80" />
+            </g>
+            <!-- Satellite 2: Top-Right = center (280+49, 880-49) = (329, 831) -->
+            <g id="satellite-school-2" opacity="0">
+              <image href="stakeholder illustrations/school 2.png" x="289" y="791" width="80" height="80" />
+            </g>
+            <!-- Satellite 3: Bottom-Left = center (280-49, 880+19) = (231, 899) - moved up 30px total -->
+            <g id="satellite-school-3" opacity="0">
+              <image href="stakeholder illustrations/school 3.png" x="191" y="859" width="80" height="80" />
+            </g>
+            <!-- Satellite 4: Bottom-Right = center (280+49, 880+19) = (329, 899) - moved up 30px total -->
+            <g id="satellite-school-4" opacity="0">
+              <image href="stakeholder illustrations/school 4.png" x="289" y="859" width="80" height="80" />
+            </g>
+          </g>
+
+          <!-- Value Annotations Container -->
+          <g id="value-annotations"></g>
+
+        </g>
+
+        <!-- Dashboard Demo Section (Hidden Initially) -->
+        <g id="dashboard-demo-section" opacity="0">
+
+          <!-- AI and Human Shapes Container -->
+          <g id="ai-human-container" class="ai-human-container">
+            <!-- AI Shape (Teal dots clustered into "AI" form) - Left side -->
+            <g id="ai-shape">
+              <!-- Dots will be generated dynamically -->
+            </g>
+            <!-- AI Capability Label -->
+            <text id="ai-label" class="capability-label ai" x="600" y="600">Pattern recognition • Data tracking •
+              Coordination</text>
+
+            <!-- Human Shape (Yellow dots clustered into human silhouette) - Right side -->
+            <g id="human-shape">
+              <!-- Dots will be generated dynamically -->
+            </g>
+            <!-- Human Capability Label -->
+            <text id="human-label" class="capability-label human" x="1320" y="600">Trust building • Motivation •
+              Judgment</text>
+          </g>
+
+          <!-- Dashboard Frame (1280x800px, centered horizontally, 10vh from top) -->
+          <!-- Position: x=320 (center of 1920 - 1280/2), y=108 (10% of 1080) -->
+          <g id="dashboard-frame-container" opacity="0">
+            <rect id="dashboard-frame" class="dashboard-frame" x="320" y="108" width="1280" height="800" rx="8" ry="8"
+              fill="#F5F5F5" stroke="#E0E0E0" stroke-width="2" />
+
+            <!-- Video Placeholder Message -->
+            <g id="video-placeholder">
+              <text x="960" y="480" text-anchor="middle" font-size="32" font-weight="600" fill="#888">
+                [Video Recording Placeholder]
+              </text>
+              <text x="960" y="530" text-anchor="middle" font-size="20" fill="#AAA">
+                This section will be replaced with the actual video recording
+              </text>
+            </g>
+          </g>
+
+          <!-- Phase Indicator (Below dashboard frame) -->
+          <!-- Position: Centered at x=960, y=948 (40px below dashboard frame bottom at 908) -->
+          <g id="phase-indicator" class="phase-indicator-group">
+            <!-- Connecting Lines -->
+            <line id="phase-line-1-2" class="phase-line" x1="770" y1="948" x2="920" y2="948" />
+            <line id="phase-line-2-3" class="phase-line" x1="1000" y1="948" x2="1150" y2="948" />
+
+            <!-- Circle 01: Pre-session Coach (Active initially) -->
+            <g id="phase-1-group">
+              <circle id="phase-circle-1" class="phase-circle active" cx="730" cy="948" r="20" />
+              <text id="phase-number-1" class="phase-number active" x="730" y="948">01</text>
+              <text id="phase-title-1" class="phase-label active" x="730" y="980">Pre-session</text>
+              <text id="phase-subtitle-1" class="phase-label active" x="730" y="996">Coach</text>
+            </g>
+
+            <!-- Circle 02: In-session Co-pilot (Inactive initially) -->
+            <g id="phase-2-group">
+              <circle id="phase-circle-2" class="phase-circle inactive" cx="960" cy="948" r="20" />
+              <text id="phase-number-2" class="phase-number inactive" x="960" y="948">02</text>
+              <text id="phase-title-2" class="phase-label inactive" x="960" y="980">In-session</text>
+              <text id="phase-subtitle-2" class="phase-label inactive" x="960" y="996">Co-pilot</text>
+            </g>
+
+            <!-- Circle 03: Post-session Companion (Inactive initially) -->
+            <g id="phase-3-group">
+              <circle id="phase-circle-3" class="phase-circle inactive" cx="1190" cy="948" r="20" />
+              <text id="phase-number-3" class="phase-number inactive" x="1190" y="948">03</text>
+              <text id="phase-title-3" class="phase-label inactive" x="1190" y="980">Post-session</text>
+              <text id="phase-title-4" class="phase-label" x="1190" y="980">Maturity</text>
+            </g>
+          </g>
+
+        </g>
+        <!-- End of Dashboard Demo Section -->
+
+        <!-- ======================================== -->
+        <!-- COST DISPLAY SECTION (2:23+)             -->
+        <!-- ======================================== -->
+        <g id="cost-display-group" style="pointer-events: none;">
+          <!-- Main Cost Value: $2,000 -> $20 -->
+          <!-- Lato Bold 96pt, #0472A8 -->
+          <!-- Using dx for equal character spacing -->
+          <text id="cost-display-text" class="cost-number" x="0" y="680" text-anchor="start"
+            font-family="Lato, sans-serif" font-weight="700" font-size="96" fill="#0472A8" opacity="0">
+            <tspan id="cost-currency">$</tspan>
+            <tspan id="cost-digit-2" dx="0">2</tspan>
+            <tspan id="cost-comma" dx="0">,</tspan>
+            <tspan id="cost-zero-1" dx="0">0</tspan>
+            <tspan id="cost-zero-2" dx="0">0</tspan>
+            <tspan id="cost-zero-3" dx="0">0</tspan>
+          </text>
+
+          <!-- Subtitle: per student per month -->
+          <!-- Lato Regular 28pt, #0472A8 -->
+          <text id="cost-subtitle" x="960" y="730" text-anchor="middle" font-family="Lato, sans-serif" font-weight="400"
+            font-size="28" fill="#0472A8" opacity="0">per student per month</text>
+        </g>
+
+        <!-- Phase 2: Diamond labels (Discover, Define, Develop, Deliver) - flash during Phase C -->
+        <g id="phase2-diamond-labels" opacity="0">
+          <text id="label-discover" x="480" y="540" text-anchor="middle" font-size="12" fill="#666">Discover</text>
+          <text id="label-define" x="720" y="380" text-anchor="middle" font-size="12" fill="#666">Define</text>
+          <text id="label-develop" x="1200" y="380" text-anchor="middle" font-size="12" fill="#666">Develop</text>
+          <text id="label-deliver" x="1440" y="540" text-anchor="middle" font-size="12" fill="#666">Deliver</text>
+        </g>
+        <!-- Phase 2: Plus symbol (forms after diamond lines flow inward) -->
+        <g id="phase2-plus" opacity="0">
+          <line id="plus-h" x1="860" y1="540" x2="1060" y2="540" stroke="#333" stroke-width="4" />
+          <line id="plus-v" x1="960" y1="440" x2="960" y2="640" stroke="#333" stroke-width="4" />
+        </g>
+        <!-- Phase 2: Stakeholder nodes (icons: placeholder paths; replace with custom vectors) -->
+        <g id="phase2-nodes" opacity="0">
+          <!-- Foundations (Top-Left) -->
+          <g id="node-top">
+            <circle id="node-top-circle" cx="280" cy="200" r="60" fill="url(#grad-gold)"
+              filter="url(#node-glow-gold)" />
+            <g id="node-top-icon" transform="translate(280, 200) scale(0.4) translate(-50, -50)">
+              <path d="M 20 80 L 50 40 L 80 80 L 80 90 L 20 90 Z" fill="#333" stroke="none" />
+              <rect x="35" y="55" width="30" height="35" fill="#333" />
+            </g><text id="node-top-label" x="280" y="280" text-anchor="middle" font-size="14"
+              fill="#333">Foundation</text>
+          </g>
+          <!-- Researchers (Bottom-Right) -->
+          <g id="node-bottom">
+            <circle id="node-bottom-circle" cx="1640" cy="880" r="60" fill="url(#grad-purple)"
+              filter="url(#node-glow-purple)" />
+            <g id="node-bottom-icon" transform="translate(1640, 880) scale(0.4) translate(-50, -50)">
+              <ellipse cx="50" cy="35" rx="25" ry="20" fill="none" stroke="#333" stroke-width="4" />
+              <line x1="50" y1="55" x2="50" y2="85" stroke="#333" stroke-width="4" />
+              <line x1="30" y1="85" x2="70" y2="85" stroke="#333" stroke-width="3" />
+            </g><text id="node-bottom-label" x="1640" y="960" text-anchor="middle" font-size="14"
+              fill="#333">Researcher</text>
+          </g>
+          <!-- Schools (Bottom-Left) -->
+          <g id="node-left">
+            <circle id="node-left-circle" cx="280" cy="880" r="60" fill="url(#grad-blue)"
+              filter="url(#node-glow-blue)" />
+            <g id="node-left-icon" transform="translate(280, 880) scale(0.4) translate(-50, -50)">
+              <path d="M 50 25 L 80 50 L 80 90 L 20 90 L 20 50 Z" fill="none" stroke="#333" stroke-width="3" />
+              <rect x="38" y="55" width="24" height="25" fill="none" stroke="#333" stroke-width="2" />
+            </g><text id="node-left-label" x="280" y="960" text-anchor="middle" font-size="14" fill="#333">School</text>
+          </g>
+          <!-- Tutors (Top-Right) -->
+          <g id="node-right">
+            <circle id="node-right-circle" cx="1640" cy="200" r="60" fill="url(#grad-coral)"
+              filter="url(#node-glow-coral)" />
+            <g id="node-right-icon" transform="translate(1640, 200) scale(0.4) translate(-50, -50)">
+              <circle cx="50" cy="32" r="12" fill="none" stroke="#333" stroke-width="3" />
+              <path d="M 50 44 L 50 75 L 35 90 L 50 85 L 65 90 Z" fill="none" stroke="#333" stroke-width="2.5" />
+            </g><text id="node-right-label" x="1640" y="280" text-anchor="middle" font-size="14"
+              fill="#333">Tutor</text>
+          </g>
+        </g>
+        <!-- Section 4: Value exchange particles (pool, reused per flow) -->
+        <g id="value-particles"></g>
+        <!-- Section 4: Connection line Foundation–Center–Researcher (glow on Exchange 1) -->
+        <path id="value-connection-line" d="M 960 180 L 960 540 L 960 900" stroke="url(#value-line-gradient)"
+          stroke-width="2" opacity="0" fill="none" />
+        <!-- Section 4: Value exchange labels (temporary callouts) -->
+        <g id="value-labels" opacity="0">
+          <text id="value-label-1" x="960" y="100" text-anchor="middle" font-size="16" fill="#666">Policy influence +
+            donor credibility</text>
+          <text id="value-label-2" x="240" y="460" text-anchor="start" font-size="16" fill="#666">Student identification
+            + curriculum alignment</text>
+          <text id="value-label-3" x="1680" y="460" text-anchor="end" font-size="16" fill="#666">$15–20/hr + pedagogical
+            training</text>
+        </g>
+      </svg>
+      <!-- Thesis Animation Container (0:28-0:42) -->
+      <div id="thesis-animation-container"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20;">
+        <!-- AI Icon (Left) -->
+        <div id="ai-icon-large" class="fa-icon-large"
+          style="left: 32%; top: 45%; opacity: 0; color: #9B6DD6; font-size: min(14.1vw, 270px);">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div id="ai-icon-label" class="icon-caption"
+          style="left: 32%; top: calc(60% + 15px); color: #9B6DD6; font-size: min(1.89vw, 36px);">AI</div>
+
+        <!-- Human Icon (Right) -->
+        <div id="human-icon-large" class="fa-icon-large"
+          style="left: 68%; top: 45%; opacity: 0; color: #5DADE2; font-size: min(14.1vw, 270px);">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div id="human-icon-label" class="icon-caption"
+          style="left: 68%; top: calc(60% + 15px); color: #5DADE2; font-size: min(1.89vw, 36px);">Human</div>
+
+        <!-- AI Badges (Orbital: Top, Left-far, Bottom) -->
+        <!-- Center (25%, 45%) -->
+        <div id="ai-badge-1" class="capability-badge ai"
+          style="left: calc(32% + 40px); top: calc(28% - 50px); opacity: 0;">
+          Pattern recognition</div>
+        <div id="ai-badge-2" class="capability-badge ai" style="left: calc(32% - 200px); top: 45%; opacity: 0;">
+          Data tracking</div>
+        <div id="ai-badge-3" class="capability-badge ai"
+          style="left: calc(32% + 40px); top: calc(66% + 30px); opacity: 0;">
+          Coordination</div>
+
+        <!-- Human Badges (Orbital: Top, Right-far, Bottom) -->
+        <!-- Center (75%, 45%) -->
+        <div id="human-badge-1" class="capability-badge human"
+          style="left: calc(68% - 40px); top: calc(28% - 50px); opacity: 0;">Trust building</div>
+        <div id="human-badge-2" class="capability-badge human" style="left: calc(68% + 200px); top: 45%; opacity: 0;">
+          Motivation</div>
+        <div id="human-badge-3" class="capability-badge human"
+          style="left: calc(68% - 40px); top: calc(66% + 30px); opacity: 0;">
+          Judgment</div>
+      </div>
+      <div id="icon-container"></div>
+      <div id="final-frame-container">
+        <div id="tagline-characters-container">
+          <img class="tagline-char" id="char-a" src="assets/final-frame/mcp/chars/01-a.svg" alt="a">
+          <img class="tagline-char" id="char-p" src="assets/final-frame/mcp/chars/02-p.svg" alt="P">
+          <img class="tagline-char" id="char-l" src="assets/final-frame/mcp/chars/03-l.svg" alt="L">
+          <img class="tagline-char" id="char-u" src="assets/final-frame/mcp/chars/04-u.svg" alt="U">
+          <img class="tagline-char" id="char-s" src="assets/final-frame/mcp/chars/05-s.svg" alt="S">
+          <img class="tagline-char" id="char-f" src="assets/final-frame/mcp/chars/06-f.svg" alt="f">
+          <img class="tagline-char" id="char-o" src="assets/final-frame/mcp/chars/07-o.svg" alt="o">
+          <img class="tagline-char" id="char-r" src="assets/final-frame/mcp/chars/08-r.svg" alt="r">
+          <img class="tagline-char" id="char-e" src="assets/final-frame/mcp/chars/09-e.svg" alt="e">
+          <img class="tagline-char" id="char-v" src="assets/final-frame/mcp/chars/10-v.svg" alt="v">
+          <img class="tagline-char" id="char-e2" src="assets/final-frame/mcp/chars/11-e.svg" alt="e">
+          <img class="tagline-char" id="char-r2" src="assets/final-frame/mcp/chars/12-r.svg" alt="r">
+          <img class="tagline-char" id="char-y" src="assets/final-frame/mcp/chars/13-y.svg" alt="y">
+          <img class="tagline-char" id="char-c" src="assets/final-frame/mcp/chars/14-c.svg" alt="c">
+          <img class="tagline-char" id="char-l2" src="assets/final-frame/mcp/chars/15-l.svg" alt="l">
+          <img class="tagline-char" id="char-a2" src="assets/final-frame/mcp/chars/16-a.svg" alt="a">
+          <img class="tagline-char" id="char-s2" src="assets/final-frame/mcp/chars/17-s.svg" alt="s">
+          <img class="tagline-char" id="char-s3" src="assets/final-frame/mcp/chars/18-s.svg" alt="s">
+        </div>
+        <div class="blob-item" id="blob-pencil" aria-label="pencil illustration">
+          <div class="pencil-wrap" id="pencil-p1-wrap">
+            <div class="pencil-inner" id="pencil-p1-inner">
+              <div id="pencil-p1-art">
+                <img src="assets/final-frame/mcp/pencil/p1.svg" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="pencil-wrap" id="pencil-p2-wrap">
+            <div class="pencil-inner" id="pencil-p2-inner">
+              <img src="assets/final-frame/mcp/pencil/p2.svg" alt="">
+            </div>
+          </div>
+          <div class="pencil-wrap" id="pencil-p3-wrap">
+            <div class="pencil-inner" id="pencil-p3-inner">
+              <img src="assets/final-frame/mcp/pencil/p3.svg" alt="">
+            </div>
+          </div>
+          <div class="pencil-wrap" id="pencil-p4-wrap">
+            <div class="pencil-inner" id="pencil-p4-inner">
+              <img src="assets/final-frame/mcp/pencil/p4.svg" alt="">
+            </div>
+          </div>
+          <div class="pencil-wrap" id="pencil-p5-wrap">
+            <div class="pencil-inner" id="pencil-p5-inner">
+              <div id="pencil-p5-art">
+                <img src="assets/final-frame/mcp/pencil/p5.svg" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="pencil-wrap" id="pencil-p6-wrap">
+            <div id="pencil-p6-rot">
+              <div class="pencil-inner" id="pencil-p6-inner">
+                <div id="pencil-p6-art">
+                  <img src="assets/final-frame/mcp/pencil/p6.svg" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pencil-wrap" id="pencil-p7-wrap">
+            <div id="pencil-p7-rot">
+              <div class="pencil-inner" id="pencil-p7-inner">
+                <div id="pencil-p7-art">
+                  <img src="assets/final-frame/mcp/pencil/p7.svg" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pencil-wrap" id="pencil-p8-wrap">
+            <div id="pencil-p8-rot">
+              <div class="pencil-inner" id="pencil-p8-inner">
+                <img src="assets/final-frame/mcp/pencil/p8.svg" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="pencil-wrap" id="pencil-p9-wrap">
+            <div id="pencil-p9-rot">
+              <div class="pencil-inner" id="pencil-p9-inner">
+                <img src="assets/final-frame/mcp/pencil/p9.svg" alt="">
+              </div>
+            </div>
+          </div>
+        </div>
+        <img class="blob-item" id="blob-1" src="assets/final-frame/mcp/blob-1.png" alt="blob character 1">
+        <img class="blob-item" id="blob-2" src="assets/final-frame/mcp/blob-2.png" alt="blob character 2">
+        <img class="blob-item" id="blob-3" src="assets/final-frame/mcp/blob-3.png" alt="blob character 3">
+        <img class="blob-item" id="blob-4" src="assets/final-frame/mcp/blob-4.png" alt="blob character 4">
+        <img class="blob-item" id="blob-5" src="assets/final-frame/mcp/blob-5.png" alt="blob character 5">
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-container collapsed" id="controlsContainer">
+    <button class="collapse-toggle" onclick="toggleControls()">
+      <span id="toggleIcon">▲</span>
+    </button>
+    <div class="controls-content">
+      <div class="control-bar">
+        <button class="play-btn" id="playBtn" onclick="togglePlay()">
+          <svg class="play-icon" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <svg class="pause-icon" viewBox="0 0 24 24">
+            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+          </svg>
+        </button>
+        <div class="time-display"><span id="currentTime">00:00</span> / <span id="totalTime">00:00</span></div>
+        <input type="range" class="scrubber" id="scrubber" min="0" max="100" value="0" step="0.1">
+      </div>
+      <div class="settings-panel">
+        <span>DURATIONS (s):</span>
+        <div class="phase-input-group"><label>Problem</label><input type="number" id="dur-problem" value="22.0"
+            step="0.5">
+        </div>
+        <div class="phase-input-group"><label>Thesis</label><input type="number" id="dur-thesis" value="20.0"
+            step="0.5">
+        </div>
+        <div class="phase-input-group"><label>Phase1</label><input type="number" id="dur-phase1" value="14.0"
+            step="0.5"></div>
+        <div class="phase-input-group"><label>Phase2</label><input type="number" id="dur-phase2" value="20.0"
+            step="0.5">
+        </div>
+        <div class="phase-input-group"><label>Phase3</label><input type="number" id="dur-phase3" value="22.0"
+            step="0.5">
+        </div>
+        <div class="phase-input-group"><label>System</label><input type="number" id="dur-system" value="18.0"
+            step="0.5"></div>
+        <div class="phase-input-group"><label>Admin</label><input type="number" id="dur-admin" value="14.0" step="0.5">
+        </div>
+        <div class="phase-input-group"><label>Evolve</label><input type="number" id="dur-evolve" value="10.0"
+            step="0.5">
+        </div>
+        <div class="phase-input-group"><label>Close</label><input type="number" id="dur-close" value="70.0" min="70"
+            step="0.5">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========================================
+    // CONFIGURATION
+    // ========================================
+    const COLORS = {
+      primary: '#58D4DE', // Teal
+      crisis: '#FF4F4F',  // Red
+      success: '#F2C94C', // Gold
+    };
+
+    // Image asset constants
+    const IMAGES = {
+      // All math crisis images (9 total)
+      crisis_1: 'math crisis/image_360-1.png',
+      crisis_2: 'math crisis/image_360-2.png',
+      crisis_3: 'math crisis/image_360-3.png',
+      crisis_4: 'math crisis/image_360-4.png',
+      crisis_5: 'math crisis/image_360-5.png',
+      crisis_6: 'math crisis/image_360.png',
+      crisis_7: 'math crisis/image_480-3.png',
+      crisis_8: 'math crisis/image_480.png',
+      crisis_9: 'math crisis/image_720.png',
+      // Tutoring works images (2 total)
+      tutoring_1: 'tutoring works/image_360.png',
+      tutoring_2: 'tutoring works/image_480.png'
+    };
+
+    const CONSTANTS = {
+      BASELINE_Y: 840,
+      THRESHOLD_X: 1152,
+      TOTAL_DOTS: 80,
+      SIGMA: 216,
+      CRISIS_PEAK: 780,  // Closer to center
+      NORMAL_PEAK: 1020,  // Moved right from 800
+      SOLUTION_PEAK: 1260
+    };
+
+    // ========================================
+    // TIMING LOGIC
+    // ========================================
+    function getTiming() {
+      const getVal = (id, def) => parseFloat(document.getElementById(id).value) || def;
+
+      // Main section durations from control bar (matching director's notes)
+      const d = {
+        problem: getVal('dur-problem', 22.0),   // Problem Setup
+        thesis: getVal('dur-thesis', 20.0),     // Thesis + Rationale
+        phase1: getVal('dur-phase1', 14.0),     // Phase 1: Pre-session Training (0:42-0:56)
+        phase2: getVal('dur-phase2', 20.0),     // Phase 2: During Session (0:56-1:16)
+        phase3: getVal('dur-phase3', 22.0),     // Phase 3: Post-session Reflection (1:16-1:38)
+        system: getVal('dur-system', 18.0),     // System Reveal
+        admin: getVal('dur-admin', 14.0),       // Admin/Researcher Views
+        evolve: getVal('dur-evolve', 10.0),     // System Evolution (2:18-2:28)
+        close: Math.max(70.0, getVal('dur-close', 70.0)) // Economic Transformation + Close extended so total defaults to 3:30
+      };
+
+      // Sub-phase durations within Problem Setup (proportional to 28s total)
+      // These break down the Problem section into the animation phases
+      const problemSubPhases = {
+        entrance: 3.5,  // Sparkle entrance
+        network: 4.0,   // Network formation  
+        scale: 3.5,     // Scale/distribute
+        crisis: 17.0    // Crisis curves and headlines
+      };
+
+      let t = 0;
+
+      // Calculate sub-phase timing within Problem section
+      const p1Start = t;
+      const p1End = t += problemSubPhases.entrance;
+      const p2Start = t;
+      const p2End = t += problemSubPhases.network;
+      const p3Start = t;
+      const p3End = t += problemSubPhases.scale;
+      const p4Start = t;
+      const p4End = t += problemSubPhases.crisis;
+
+      // Reset t to end of Problem section for thesis section
+      t = d.problem; // 28s
+
+      return {
+        // Problem Setup [0:00-0:28] - with sub-phases for animation
+        problemStart: 0, problemEnd: d.problem,
+        // Legacy sub-phase names for backwards compatibility with animation code
+        p1Start, p1End,  // Sparkle entrance
+        p2Start, p2End,  // Network
+        p3Start, p3End,  // Scale  
+        p4Start, p4End,  // Crisis (ends at ~28s matching Problem end)
+        p5Start: d.problem, p5End: d.problem, // Legacy - no longer used
+        p6Start: d.problem, p6End: d.problem, // Legacy - no longer used
+
+        // Thesis + Rationale [0:28-0:50]
+        thesisStart: t, thesisEnd: t += d.thesis,
+        // Phase 1: Pre-session Training [0:50-1:05]  
+        phase1Start: t, phase1End: t += d.phase1,
+        // Phase 2: During Session [1:05-1:25]
+        phase2Start: t, phase2End: t += d.phase2,
+        // Phase 3: Post-session Reflection [1:25-1:40]
+        phase3Start: t, phase3End: t += d.phase3,
+        // System Reveal [1:40-2:05]
+        systemStart: t, systemEnd: t += d.system,
+        // Admin/Researcher Views [2:05-2:18]
+        adminStart: t, adminEnd: t += d.admin,
+        // System Evolution [2:18-2:28]
+        evolveStart: t, evolveEnd: t += d.evolve,
+        // Economic Transformation + Close [2:28-2:40]
+        closeStart: t, closeEnd: t += d.close,
+
+        // Legacy aliases for animation code
+        p6designStart: d.problem + d.thesis, p6designEnd: d.problem + d.thesis + d.phase1 + d.phase2 + d.phase3,
+        p6valueStart: d.problem + d.thesis + d.phase1 + d.phase2 + d.phase3, p6valueEnd: d.problem + d.thesis + d.phase1 + d.phase2 + d.phase3 + d.system,
+
+        total: t
+      };
+    }
+
+    // ========================================
+    // PATH GENERATORS
+    // ========================================
+    // CUBIC BEZIER STAR (Fixes distortion)
+    function generateStarPath(cx, cy, r) {
+      const k = 0.3; // Concavity factor
+      const rIn = r * k;
+      // 4 points (Top, Right, Bottom, Left)
+      // We use Cubic Beziers (C) to match the Circle path commands
+      return `
+    M ${cx} ${cy - r}
+    C ${cx + rIn} ${cy - rIn}, ${cx + rIn} ${cy - rIn}, ${cx + r} ${cy}
+    C ${cx + rIn} ${cy + rIn}, ${cx + rIn} ${cy + rIn}, ${cx} ${cy + r}
+    C ${cx - rIn} ${cy + rIn}, ${cx - rIn} ${cy + rIn}, ${cx - r} ${cy}
+    C ${cx - rIn} ${cy - rIn}, ${cx - rIn} ${cy - rIn}, ${cx} ${cy - r}
+    Z
+  `;
+    }
+
+    // CUBIC BEZIER CIRCLE
+    function generateCirclePath(cx, cy, r) {
+      const k = 0.55228 * r;
+      return `
+    M ${cx} ${cy - r}
+    C ${cx + k} ${cy - r}, ${cx + r} ${cy - k}, ${cx + r} ${cy}
+    C ${cx + r} ${cy + k}, ${cx + k} ${cy + r}, ${cx} ${cy + r}
+    C ${cx - k} ${cy + r}, ${cx - r} ${cy + k}, ${cx - r} ${cy}
+    C ${cx - r} ${cy - k}, ${cx - k} ${cy - r}, ${cx} ${cy - r}
+    Z
+  `;
+    }
+
+    // BELL CURVE MATH
+    function bellCurveY(x, peak) {
+      const exponent = -Math.pow(x - peak, 2) / (2 * Math.pow(CONSTANTS.SIGMA, 2));
+      return CONSTANTS.BASELINE_Y - 420 * Math.exp(exponent);
+    }
+
+    // AREA PATH (Right of Threshold)
+    function generateAreaPath(peak) {
+      let d = `M ${CONSTANTS.THRESHOLD_X} ${CONSTANTS.BASELINE_Y}`;
+      // Draw curve points
+      for (let x = CONSTANTS.THRESHOLD_X; x <= 1800; x += 12) {
+        d += ` L ${x} ${bellCurveY(x, peak)}`;
+      }
+      // Close shape
+      d += ` L 1800 ${CONSTANTS.BASELINE_Y} Z`;
+      return d;
+    }
+
+    /**
+     * SECTION 1: Double diamond (spec) — 4-point closed shape.
+     * Left: (480,540), (720,380), (960,540), (720,700)
+     * Right: (960,540), (1200,380), (1440,540), (1200,700)
+     */
+    const DIAMOND_LEFT_V = [[480, 540], [720, 380], [960, 540], [720, 700]];
+    const DIAMOND_RIGHT_V = [[960, 540], [1200, 380], [1440, 540], [1200, 700]];
+    const DESIGN_CENTER = [960, 540];
+
+    /** Plus: horizontal (860,540)-(1060,540), vertical (960,440)-(960,640), #333, 4px */
+    const PLUS_H = { x1: 860, y1: 540, x2: 1060, y2: 540 };
+    const PLUS_V = { x1: 960, y1: 440, x2: 960, y2: 640 };
+
+    /**
+     * Returns n points evenly along a closed polygon (diamond perimeter)
+     * @param {number[][]} vertices - [[x,y], ...] in order (4 for diamond)
+     * @param {number} n - number of points
+     * @returns {{x: number, y: number}[]}
+     */
+    function pointsAlongPolygon(vertices, n) {
+      if (n <= 0) return [];
+      const out = [];
+      const segs = [];
+      let total = 0;
+      for (let i = 0; i < vertices.length; i++) {
+        const a = vertices[i];
+        const b = vertices[(i + 1) % vertices.length];
+        const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        segs.push({ start: total, len, a, b });
+        total += len;
+      }
+      for (let i = 0; i < n; i++) {
+        const s = total > 0 ? (i / n) * total : 0;
+        for (const seg of segs) {
+          if (s <= seg.start + seg.len + 1e-6) {
+            const u = seg.len > 1e-6 ? Math.min(1, (s - seg.start) / seg.len) : 1;
+            out.push({
+              x: seg.a[0] + u * (seg.b[0] - seg.a[0]),
+              y: seg.a[1] + u * (seg.b[1] - seg.a[1])
+            });
+            break;
+          }
+        }
+      }
+      return out;
+    }
+
+    /**
+     * Returns n points evenly along a line segment (straightened curve)
+     * @param {number} x1 - start x
+     * @param {number} y1 - start y
+     * @param {number} x2 - end x
+     * @param {number} y2 - end y
+     * @param {number} n - number of points
+     * @returns {{x: number, y: number}[]}
+     */
+    function pointsAlongLine(x1, y1, x2, y2, n) {
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const t = n <= 1 ? 0.5 : i / (n - 1);
+        out.push({ x: x1 + t * (x2 - x1), y: y1 + t * (y2 - y1) });
+      }
+      return out;
+    }
+
+    /**
+     * Returns n points along the plus symbol (half on horizontal bar, half on vertical)
+     * @param {number} n - total points
+     * @returns {{x: number, y: number}[]}
+     */
+    function pointsAlongPlus(n) {
+      const out = [];
+      const nH = Math.floor(n / 2);
+      const nV = n - nH;
+      for (let i = 0; i < nH; i++) {
+        const u = nH <= 1 ? 0.5 : i / (nH - 1);
+        out.push({
+          x: PLUS_H.x1 + u * (PLUS_H.x2 - PLUS_H.x1),
+          y: PLUS_H.y1
+        });
+      }
+      for (let i = 0; i < nV; i++) {
+        const u = nV <= 1 ? 0.5 : i / (nV - 1);
+        out.push({
+          x: PLUS_V.x1,
+          y: PLUS_V.y1 + u * (PLUS_V.y2 - PLUS_V.y1)
+        });
+      }
+      return out;
+    }
+
+    // ========================================
+    // INITIALIZATION
+    // ========================================
+    let tl, pulseTl = null, allDots = [], networkLines = [];
+    const svg = document.getElementById('canvas');
+    const els = {
+      sparkles: document.getElementById('sparkles'),
+      dots: document.getElementById('dots-container'),
+      leftCurve: document.getElementById('left-curve-group'),
+      rightCurve: document.getElementById('right-curve-group'),
+      sceneEnvironment: document.querySelector('.scene-environment'),
+      lines: document.getElementById('network-lines'),
+      area: document.getElementById('area-fill'),
+      areaClipRect: document.getElementById('area-clip-rect'),
+      gapRect: document.getElementById('gap-rect'),
+      title: document.getElementById('graph-title'),
+      overlays: document.getElementById('overlays'),
+      sceneB: document.getElementById('scene-b'),
+      centralNode: document.getElementById('central-node'),
+      ecosystemNodes: document.querySelector('.ecosystem-nodes')
+    };
+
+    function createEl(type, attrs) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', type);
+      for (let k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+
+    function centeredSlots(count, step, centerX = 960) {
+      const start = centerX - ((count - 1) * step) / 2;
+      return Array.from({ length: count }, (_, i) => start + i * step);
+    }
+
+    function centeredSlotsFromSteps(steps, centerX = 960) {
+      const slots = [0];
+      for (let i = 0; i < steps.length; i++) slots.push(slots[i] + steps[i]);
+      const span = slots[slots.length - 1];
+      const start = centerX - span / 2;
+      return slots.map(v => start + v);
+    }
+
+    const COST_BASE_STEP = 64; // equal spacing for "$ 2 , 0 0 0"
+    const COST_COMMA_TO_ZERO_STEP = 42; // tighten " ,000 " visual gap
+    const COST_2000_STEPS = [
+      COST_BASE_STEP,          // $ -> 2
+      COST_BASE_STEP,          // 2 -> ,
+      COST_COMMA_TO_ZERO_STEP, // , -> first 0 (reduced)
+      COST_BASE_STEP,          // 0 -> 0
+      COST_BASE_STEP           // 0 -> 0
+    ];
+    const COST_STEP_20 = COST_BASE_STEP * 1.25; // tighter spacing for "$20"
+
+    // ========================================
+    // ANIMATION BUILDER
+    // ========================================
+    function buildTimeline() {
+      if (tl) tl.kill();
+      const T = getTiming();
+      document.getElementById('totalTime').innerText = formatTime(T.total);
+
+      // Clear & Reset
+      els.sparkles.innerHTML = '';
+      els.leftCurve.innerHTML = '';
+      els.rightCurve.innerHTML = '';
+      els.lines.innerHTML = '';
+      els.overlays.innerHTML = '';
+      allDots = []; networkLines = [];
+
+      // Create ALL crisis headline images (9 total) - evenly spread horizontally
+      // Avoid title area (y=72)
+      // Spread evenly across viewport (1920px width), use y values between 120-960
+      // Scaled size: 300-360px (1.2x scale)
+      const crisisImages = [
+        { id: 'img-crisis-1', href: IMAGES.crisis_1, x: 144, y: 180, width: 300 },   // Top row, left
+        { id: 'img-crisis-2', href: IMAGES.crisis_2, x: 504, y: 180, width: 300 },   // Top row, left-center
+        { id: 'img-crisis-3', href: IMAGES.crisis_3, x: 864, y: 180, width: 300 },   // Top row, right-center
+        { id: 'img-crisis-4', href: IMAGES.crisis_4, x: 1224, y: 180, width: 300 },  // Top row, right
+        { id: 'img-crisis-5', href: IMAGES.crisis_5, x: 1584, y: 180, width: 300 },  // Top row, far right
+        { id: 'img-crisis-6', href: IMAGES.crisis_6, x: 324, y: 480, width: 300 },   // Middle row, left
+        { id: 'img-crisis-7', href: IMAGES.crisis_7, x: 684, y: 480, width: 300 },   // Middle row, left-center
+        { id: 'img-crisis-8', href: IMAGES.crisis_8, x: 1044, y: 480, width: 300 },  // Middle row, right-center
+        { id: 'img-crisis-9', href: IMAGES.crisis_9, x: 1404, y: 480, width: 360 }   // Middle row, right
+      ];
+
+      const crisisImageEls = crisisImages.map(img => {
+        // Create group to hold rounded rect background and image
+        const group = createEl('g', { id: img.id + '-group' });
+        const rect = createEl('rect', {
+          x: img.x.toString(),
+          y: img.y.toString(),
+          width: img.width.toString(),
+          height: (img.width * 0.75).toString(), // Approximate aspect ratio
+          rx: '8',
+          ry: '8',
+          fill: 'white',
+          stroke: 'rgba(0, 0, 0, 0.2)',
+          'stroke-width': '2',
+          opacity: '0'
+        });
+        const el = createEl('image', {
+          x: img.x,
+          y: img.y,
+          width: img.width.toString(),
+          opacity: '0'
+        });
+        el.setAttributeNS('http://www.w3.org/1999/xlink', 'href', img.href);
+        group.appendChild(rect);
+        group.appendChild(el);
+        els.overlays.appendChild(group);
+        return { el: group, imageEl: el, rectEl: rect, x: img.x, y: img.y, width: img.width };
+      });
+
+      // Create tutoring works image (1 total) - UChicago News (image_480.png), larger size, anchored to the left, positioned higher
+      const tutoringImages = [
+        { id: 'img-tutoring-1', href: IMAGES.tutoring_2, x: 120, y: 230, width: 480 }  // Moved 80px down (150 -> 230)
+      ];
+
+      const tutoringImageEls = tutoringImages.map(img => {
+        // Create group to hold rounded rect background and image
+        const group = createEl('g', { id: img.id + '-group' });
+        const rect = createEl('rect', {
+          x: img.x.toString(),
+          y: img.y.toString(),
+          width: img.width.toString(),
+          height: (img.width * 0.75).toString(), // Approximate aspect ratio
+          rx: '8',
+          ry: '8',
+          fill: 'white',
+          stroke: 'rgba(0, 0, 0, 0.2)',
+          'stroke-width': '2',
+          opacity: '0'
+        });
+        const el = createEl('image', {
+          x: img.x,
+          y: img.y,
+          width: img.width.toString(),
+          opacity: '0'
+        });
+        el.setAttributeNS('http://www.w3.org/1999/xlink', 'href', img.href);
+        group.appendChild(rect);
+        group.appendChild(el);
+        els.overlays.appendChild(group);
+        return { el: group, imageEl: el, rectEl: rect, x: img.x, y: img.y, width: img.width };
+      });
+
+      gsap.set('#graph-title, #threshold, #threshold-label, #gap-label', { opacity: 0, x: 0 });
+      gsap.set('#baseline', { opacity: 0 });
+      gsap.set(els.title, { opacity: 0 });
+      gsap.set(els.area, { opacity: 0, attr: { d: '' } });
+      gsap.set(els.areaClipRect, { attr: { x: CONSTANTS.THRESHOLD_X, y: CONSTANTS.BASELINE_Y, width: 1800 - CONSTANTS.THRESHOLD_X, height: 0 } });
+      gsap.set(els.gapRect, { opacity: 0, attr: { x: 690, y: 180, width: 462, height: 660 }, scaleY: 0, transformOrigin: '50% 100%' });
+      gsap.set(els.sceneEnvironment, { opacity: 1 });
+      gsap.set(svg, { attr: { viewBox: '0 0 1920 1080' } });
+
+      /** Scene B: reset state */
+      gsap.set(els.sceneB, { opacity: 0 });
+      // Removed centralNode set to avoid conflict with timeline
+      gsap.set('.ecosystem-nodes > g', { opacity: 0 });
+
+      /** Dashboard Demo Section: reset state */
+      gsap.set('#dashboard-demo-section', { opacity: 0 });
+      gsap.set('#ai-human-container', { opacity: 0 });
+      gsap.set('#ai-shape', { x: 0, opacity: 1 });
+      gsap.set('#human-shape', { x: 0, opacity: 1 });
+      gsap.set('#ai-label', { x: 0, opacity: 0 });
+      gsap.set('#human-label', { x: 0, opacity: 0 });
+      gsap.set('#dashboard-frame-container', { opacity: 0 });
+      gsap.set('#dashboard-content', { opacity: 0 });
+      gsap.set('#dashboard-content .dashboard-panel', { opacity: 0 });
+      gsap.set('.dashboard-text', { opacity: 0 });
+      gsap.set('.dashboard-chart', { opacity: 0 });
+      gsap.set('#phase-indicator', { opacity: 0 });
+      gsap.set('#final-frame-container', { opacity: 0 });
+
+      // Reset Thesis Animation Elements
+      gsap.set('#thesis-animation-container', { opacity: 1 });
+      gsap.set('.fa-icon-large', { opacity: 0, scale: 0.8, xPercent: -50, yPercent: -50 });
+      gsap.set('.icon-caption', { opacity: 0, scale: 0.95, xPercent: -50, yPercent: -50 });
+      gsap.set('.capability-badge', { opacity: 0, scale: 0.95, xPercent: -50, yPercent: -50 });
+      gsap.set('.tagline-char', { opacity: 0, y: -15 });
+      gsap.set('.blob-item', { opacity: 0, scale: 0.8 });
+      gsap.set('.svg-wrapper, #canvas', { backgroundColor: '#F9F7F2' });
+      gsap.set('#cost-display-text', {
+        x: 0,
+        scale: 1,
+        letterSpacing: '0px',
+        attr: { 'letter-spacing': 0 }
+      });
+      gsap.set('#cost-subtitle', { x: 0, opacity: 0 });
+
+      const slots2000 = centeredSlotsFromSteps(COST_2000_STEPS);
+      gsap.set('#cost-currency', { attr: { x: slots2000[0] }, opacity: 1, x: 0 });
+      gsap.set('#cost-digit-2', { attr: { x: slots2000[1] }, opacity: 1, x: 0 });
+      gsap.set('#cost-comma', { attr: { x: slots2000[2] }, opacity: 1, x: 0 });
+      gsap.set('#cost-zero-1', { attr: { x: slots2000[3] }, opacity: 1, x: 0 });
+      gsap.set('#cost-zero-2', { attr: { x: slots2000[4] }, opacity: 1, x: 0 });
+      gsap.set('#cost-zero-3', { attr: { x: slots2000[5] }, opacity: 1, x: 0 });
+      // Reset phase indicator to initial state (Phase 1 active)
+      gsap.set('#phase-circle-1', { attr: { fill: '#2D9CDB', stroke: 'none' } });
+      gsap.set('#phase-number-1', { fill: 'white' });
+      gsap.set(['#phase-title-1', '#phase-subtitle-1'], { fill: '#2D9CDB', fontWeight: 500 });
+      gsap.set('#phase-circle-2', { attr: { fill: 'transparent', stroke: '#C4C4C4' } });
+      gsap.set('#phase-number-2', { fill: '#757575' });
+      gsap.set(['#phase-title-2', '#phase-subtitle-2'], { fill: '#757575', fontWeight: 400 });
+      gsap.set('#phase-circle-3', { attr: { fill: 'transparent', stroke: '#C4C4C4' } });
+      gsap.set('#phase-number-3', { fill: '#757575' });
+      gsap.set(['#phase-title-3', '#phase-subtitle-3'], { fill: '#757575', fontWeight: 400 });
+
+      // Initialize image overlays
+      crisisImageEls.forEach((img, i) => {
+        gsap.set([img.el, img.imageEl, img.rectEl], {
+          opacity: 0,
+          scale: 0,
+          transformOrigin: '50% 50%'
+        });
+        gsap.set(img.imageEl, { attr: { x: img.x, y: img.y, width: img.width } });
+        gsap.set(img.rectEl, { attr: { x: img.x, y: img.y, width: img.width, height: img.width * 0.75 } });
+      });
+      tutoringImageEls.forEach((img, i) => {
+        gsap.set([img.el, img.imageEl, img.rectEl], {
+          opacity: 0,
+          scale: 0,
+          transformOrigin: '50% 50%'
+        });
+        gsap.set(img.imageEl, { attr: { x: img.x, y: img.y, width: img.width } });
+        gsap.set(img.rectEl, { attr: { x: img.x, y: img.y, width: img.width, height: img.width * 0.75 } });
+      });
+
+      if (pulseTl) { pulseTl.kill(); pulseTl = null; }
+      tl = gsap.timeline({
+        paused: true,
+        onUpdate: () => {
+          const t = Math.min(tl.time(), T.total);
+          document.getElementById('currentTime').innerText = formatTime(t);
+          // Only update scrubber if playing (prevents fighting user input while dragging)
+          if (!tl.paused()) {
+            document.getElementById('scrubber').value = T.total > 0 ? (t / T.total) * 100 : 0;
+          }
+        },
+        onComplete: () => {
+          document.getElementById('playBtn').classList.remove('playing');
+          startPulseTimeline();
+        }
+      });
+
+      // Curve scene labels that must stay stable during scrub/rebuild.
+      const curveTextTargets = ['#graph-title', '#threshold-label', '#threshold', '#gap-label'];
+
+      // ----------------------------------------
+      // PHASE 1: SPARKLE ENTRANCE
+      // ----------------------------------------
+      const sparklesData = [
+        { cx: 960, cy: 456, r: 102, sx: -180, sy: 1080 }, // Large
+        { cx: 888, cy: 600, r: 60, sx: -120, sy: 1140 }, // Med
+        { cx: 1056, cy: 624, r: 46, sx: -96, sy: 1176 }  // Small
+      ];
+
+      const sparkleEls = sparklesData.map((d, i) => {
+        const el = createEl('path', {
+          d: generateStarPath(d.sx, d.sy, d.r),
+          fill: COLORS.primary,
+          opacity: 0,
+          filter: 'url(#glow)'
+        });
+        els.sparkles.appendChild(el);
+        return { el, d };
+      });
+
+      tl.to(sparkleEls.map(s => s.el), { opacity: 1, duration: 0.3, stagger: 0.1 }, T.p1Start);
+
+      // Smooth entrance - Hard Lock at end
+      sparkleEls.forEach((s, i) => {
+        tl.to(s.el, {
+          attr: { d: generateStarPath(s.d.cx, s.d.cy, s.d.r) },
+          duration: 1.6,
+          ease: 'power2.out'
+        }, T.p1Start + 0.4 + i * 0.1);
+      });
+
+      tl.to({}, { duration: 2 }, T.p1End);
+
+      // ----------------------------------------
+      // PHASE 2: NETWORK (Morph -> Move)
+      // ----------------------------------------
+      const netPos = [
+        { x: 480, y: 378, l: 0 }, { x: 480, y: 504, l: 0 }, { x: 480, y: 630, l: 0 },
+        { x: 768, y: 336, l: 1 }, { x: 768, y: 420, l: 1 }, { x: 768, y: 504, l: 1 }, { x: 768, y: 588, l: 1 }, { x: 768, y: 672, l: 1 },
+        { x: 1056, y: 336, l: 2 }, { x: 1056, y: 420, l: 2 }, { x: 1056, y: 504, l: 2 }, { x: 1056, y: 588, l: 2 }, { x: 1056, y: 672, l: 2 },
+        { x: 1344, y: 378, l: 3 }, { x: 1344, y: 504, l: 3 }, { x: 1344, y: 630, l: 3 }, { x: 1344, y: 756, l: 3 }, { x: 1344, y: 252, l: 3 }
+      ];
+
+      // STEP A: Morph Star -> Circle IN PLACE
+      sparkleEls.forEach((s, i) => {
+        const circleD = generateCirclePath(s.d.cx, s.d.cy, s.d.r * 0.4);
+        tl.to(s.el, { attr: { d: circleD }, duration: 0.8, ease: 'power2.inOut' }, T.p2Start + 0.2);
+      });
+
+      // STEP B: Move to Input Layer (After Morph)
+      sparkleEls.forEach((s, i) => {
+        // Input layer is indices 0, 1, 2
+        const target = netPos[i];
+        const targetD = generateCirclePath(target.x, target.y, 14);
+        tl.to(s.el, { attr: { d: targetD }, duration: 0.9, ease: 'power2.inOut' }, T.p2Start + 1.1);
+
+        // Add to main array
+        const targetGroup = target.x < CONSTANTS.THRESHOLD_X ? els.leftCurve : els.rightCurve;
+        targetGroup.appendChild(s.el);
+        allDots.push({ el: s.el, x: target.x, y: target.y, isPath: true });
+      });
+
+      // Spawn remaining dots
+      for (let i = 3; i < 18; i++) {
+        const p = netPos[i];
+        const dot = createEl('circle', { cx: p.x + 50, cy: p.y, r: 14, fill: COLORS.primary, opacity: 0 });
+        // Append to left or right curve group based on threshold
+        const targetGroup = p.x < CONSTANTS.THRESHOLD_X ? els.leftCurve : els.rightCurve;
+        targetGroup.appendChild(dot);
+        allDots.push({ el: dot, x: p.x, y: p.y, isPath: false });
+
+        tl.to(dot, { opacity: 1, duration: 0.3 }, T.p2Start + 1.8 + i * 0.02)
+          .to(dot, { attr: { cx: p.x }, duration: 0.5, ease: 'power2.out' }, '<');
+      }
+
+      // Draw Lines
+      // Simple logic: connect layer N to N+1
+      const layers = [[0, 1, 2], [3, 4, 5, 6, 7], [8, 9, 10, 11, 12], [13, 14, 15, 16, 17]];
+      for (let l = 0; l < 3; l++) {
+        layers[l].forEach(srcIdx => {
+          layers[l + 1].forEach(dstIdx => {
+            const p1 = netPos[srcIdx], p2 = netPos[dstIdx];
+            const line = createEl('line', { x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, class: 'network-line' });
+            const len = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+            line.style.strokeDasharray = len;
+            line.style.strokeDashoffset = len;
+            els.lines.appendChild(line);
+            networkLines.push(line);
+          });
+        });
+      }
+
+      tl.to(networkLines, { strokeDashoffset: 0, duration: 0.6, stagger: 0.005, ease: 'power1.out' }, T.p2Start + 2.5);
+      tl.to({}, { duration: 2 }, T.p2End);
+
+      // ----------------------------------------
+      // PHASE 3: ZOOM OUT (Grid Alignment)
+      // ----------------------------------------
+      tl.to(networkLines, { opacity: 0, duration: 0.4 }, T.p3Start);
+      tl.to('#baseline', { opacity: 0.3, duration: 0.4 }, T.p3Start + 0.3);
+
+      // Grid calculation: 80 dots from x=120 to 1800
+      const gridX = [];
+      for (let i = 0; i < CONSTANTS.TOTAL_DOTS; i++) gridX.push(120 + (i / 79) * 1680);
+
+      // Move existing 18 dots to first 18 slots (Simultaneous X/Y)
+      allDots.forEach((dot, i) => {
+        const tx = gridX[i];
+        const ty = CONSTANTS.BASELINE_Y;
+        dot.x = tx; dot.y = ty; // Update state
+
+        if (dot.isPath) {
+          tl.to(dot.el, { attr: { d: generateCirclePath(tx, ty, 5) }, duration: 1.2, ease: 'power2.inOut' }, T.p3Start + 0.5);
+        } else {
+          tl.to(dot.el, { attr: { cx: tx, cy: ty, r: 5 }, duration: 1.2, ease: 'power2.inOut' }, T.p3Start + 0.5);
+        }
+      });
+
+      // Spawn new dots
+      for (let i = 18; i < CONSTANTS.TOTAL_DOTS; i++) {
+        const tx = gridX[i];
+        const dot = createEl('circle', { cx: tx, cy: CONSTANTS.BASELINE_Y, r: 5, fill: COLORS.primary, opacity: 0 });
+        // Append to left or right curve group based on threshold
+        const targetGroup = tx < CONSTANTS.THRESHOLD_X ? els.leftCurve : els.rightCurve;
+        targetGroup.appendChild(dot);
+        allDots.push({ el: dot, x: tx, y: CONSTANTS.BASELINE_Y, isPath: false });
+
+        tl.to(dot, { opacity: 1, duration: 0.3 }, T.p3Start + 1.5 + (i - 18) * 0.01);
+      }
+      tl.to({}, { duration: 2 }, T.p3End);
+
+      // ----------------------------------------
+      // PHASE 4: CRISIS (Grow Area from Bottom)
+      // ----------------------------------------
+      // Deterministic label lifecycle (no clearProps) to prevent missing-text regressions after seek/rebuild.
+      tl.set(curveTextTargets, { opacity: 0, x: 0 }, T.p3Start);
+      tl.to('#graph-title', { opacity: 1, x: 0, duration: 0.4 }, T.p3Start + 0.2);
+      tl.to(['#threshold-label', '#threshold'], { opacity: 1, x: 0, duration: 0.5 }, T.p4Start);
+      tl.set('#gap-label', { opacity: 0, x: 0 }, T.p4Start + 0.01);
+
+      // 1. Form Normal Curve (Gold) - horizontal line forms into curve
+      const normY = gridX.map(x => bellCurveY(x, CONSTANTS.NORMAL_PEAK));
+      allDots.forEach((dot, i) => {
+        dot.y = normY[i];
+        const props = dot.isPath ? { attr: { d: generateCirclePath(dot.x, dot.y, 5), fill: COLORS.success } }
+          : { attr: { cy: dot.y, fill: COLORS.success } };
+        tl.to(dot.el, { ...props, duration: 1.2, ease: 'power2.out' }, T.p4Start + 0.5);
+      });
+      // Curve formation ends at T.p4Start + 1.7
+
+      // 2. Grow Area Fill (Gold) - from baseline upward using clipPath
+      // Wait for curve to be fully in place, then fill area completely
+      const minY = bellCurveY(CONSTANTS.NORMAL_PEAK, CONSTANTS.NORMAL_PEAK); // Top of curve
+      const maxHeight = CONSTANTS.BASELINE_Y - minY; // Full height from baseline to top
+
+      tl.set(els.area, {
+        attr: { d: generateAreaPath(CONSTANTS.NORMAL_PEAK), fill: COLORS.success }
+      }, T.p4Start + 1.7);
+
+      // Set initial clipPath state: start at baseline with 0 height
+      tl.set(els.areaClipRect, {
+        attr: {
+          x: CONSTANTS.THRESHOLD_X,
+          y: CONSTANTS.BASELINE_Y,
+          width: 1800 - CONSTANTS.THRESHOLD_X,
+          height: 0
+        }
+      }, T.p4Start + 1.7);
+
+      // Animate clipPath rectangle to reveal from bottom to top - FULLY FILL
+      tl.to(els.areaClipRect, {
+        attr: {
+          y: minY,  // Move y to top of curve
+          height: maxHeight  // Grow height to full
+        },
+        duration: 1.5,
+        ease: 'power2.out'
+      }, T.p4Start + 1.7);
+
+      tl.to(els.area, { opacity: 0.5, duration: 1.5, ease: 'power2.out' }, T.p4Start + 1.7);
+      // Area fill ends at T.p4Start + 3.2
+
+      // Pause to let area fully fill
+      tl.to({}, { duration: 0.5 }, T.p4Start + 3.2);
+
+      // 3. Shift to Crisis (Red) - push curve LEFT with colored area shrinking
+      // Let it FULLY end its animation
+      const crisisY = gridX.map(x => bellCurveY(x, CONSTANTS.CRISIS_PEAK));
+      const crisisD = generateAreaPath(CONSTANTS.CRISIS_PEAK);
+      const crisisMinY = bellCurveY(CONSTANTS.CRISIS_PEAK, CONSTANTS.CRISIS_PEAK); // Top of crisis curve
+      const crisisMaxHeight = CONSTANTS.BASELINE_Y - crisisMinY; // Full height for crisis curve
+
+      allDots.forEach((dot, i) => {
+        dot.y = crisisY[i];
+        const props = dot.isPath ? { attr: { d: generateCirclePath(dot.x, dot.y, 5), fill: COLORS.crisis } }
+          : { attr: { cy: dot.y, fill: COLORS.crisis } };
+        tl.to(dot.el, { ...props, duration: 2.0, ease: 'power2.inOut' }, T.p4Start + 3.7);
+      });
+
+      // Update area path and adjust clipPath rectangle for crisis curve height
+      tl.to(els.area, {
+        attr: { d: crisisD, fill: COLORS.crisis },
+        duration: 2.0,
+        ease: 'power2.inOut'
+      }, T.p4Start + 3.7);
+
+      // Adjust clipPath rectangle to match crisis curve height (area shrinks)
+      tl.to(els.areaClipRect, {
+        attr: {
+          y: crisisMinY,
+          height: crisisMaxHeight
+        },
+        duration: 2.0,
+        ease: 'power2.inOut'
+      }, T.p4Start + 3.7);
+      // Crisis shift ends at T.p4Start + 5.7
+
+      // Pause to let crisis shift fully complete
+      tl.to({}, { duration: 0.5 }, T.p4Start + 5.7);
+
+      // 4. ALL Crisis Headlines Pop-Up - one after another, finish, then shrink and exit
+      // Animate all 9 crisis images appearing and overlaying/taking over screen
+      crisisImageEls.forEach((img, i) => {
+        tl.to([img.el, img.imageEl, img.rectEl], {
+          opacity: 1,
+          scale: 1,
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+          transformOrigin: '50% 50%'
+        }, T.p4Start + 6.2 + (i * 0.15));
+      });
+      // All images appear by T.p4Start + 6.2 + (9 * 0.15) + 0.6 = T.p4Start + 8.15
+
+      // Pause to let all images be visible
+      tl.to({}, { duration: 1.0 }, T.p4Start + 8.15);
+
+      // Crisis images shrink to their OWN centers (not all to same center)
+      // Animate both the group and its children
+      crisisImageEls.forEach(img => {
+        tl.to([img.el, img.imageEl, img.rectEl], {
+          scale: 0,  // Shrink to own center (transformOrigin already set to 50% 50%)
+          duration: 1.0,
+          ease: 'power2.inOut',
+          transformOrigin: '50% 50%'
+        }, T.p4Start + 9.15 + (crisisImageEls.indexOf(img) * 0.1));
+      });
+      // All crisis images shrink by T.p4Start + 9.15 + (9 * 0.1) + 1.0 = T.p4Start + 11.05
+
+      // Pause to ensure ALL crisis images fully exit before tutoring works image appears
+      tl.to({}, { duration: 0.5 }, T.p4Start + 11.05);
+
+      tl.to({}, { duration: 2 }, T.p4Start + 11.85);
+
+      // ----------------------------------------
+      // PHASE 5: SOLUTION (2 Steps + Proxy Sync)
+      // ----------------------------------------
+      // Tutoring works image appears AFTER all crisis images fully disappear
+      // Crisis images exit by T.p4Start + 11.05, caption appears, pause ends at T.p4Start + 11.85
+      const tutoringImageStart = T.p4Start + 11.85;
+
+      tutoringImageEls.forEach((img, i) => {
+        tl.to([img.el, img.imageEl, img.rectEl], {
+          opacity: 1,
+          scale: 1,
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+          transformOrigin: '50% 50%'
+        }, tutoringImageStart);
+      });
+      // Tutoring image fully appears by tutoringImageStart + 0.6 = T.p4Start + 12.45
+
+      // Pause to let tutoring image be fully visible
+      tl.to({}, { duration: 0.5 }, T.p4Start + 12.45);
+
+      // NOW start curve animation - AFTER tutoring image fully appears
+      const curveAnimationStart = T.p4Start + 12.45;
+
+      const proxy = { peak: CONSTANTS.CRISIS_PEAK };
+      // Helper to update everything based on peak
+      const updateGraph = () => {
+        const pk = proxy.peak;
+
+        els.area.setAttribute('d', generateAreaPath(pk));
+
+        // Color Interpolation: Red -> Yellow (center) -> Teal (right)
+        // Red (255, 79, 79) at CRISIS_PEAK (650)
+        // Yellow-Gold (242, 201, 76) at midPeak (650) - but wait, CRISIS_PEAK is 650, so we need different values
+        // Actually: Red at CRISIS_PEAK (650), Yellow-Gold at midPeak (650), Teal at SOLUTION_PEAK (1050)
+        // Since CRISIS_PEAK and midPeak are both 650, we'll use NORMAL_PEAK (850) for yellow
+        let col;
+        if (pk <= CONSTANTS.NORMAL_PEAK) {
+          // Interpolate Red -> Yellow-Gold
+          const t = (pk - CONSTANTS.CRISIS_PEAK) / (CONSTANTS.NORMAL_PEAK - CONSTANTS.CRISIS_PEAK);
+          const r = Math.round(255 + (242 - 255) * t);
+          const g = Math.round(79 + (201 - 79) * t);
+          const b = Math.round(79 + (76 - 79) * t);
+          col = `rgb(${r},${g},${b})`;
+        } else {
+          // Interpolate Yellow-Gold -> Teal
+          // Clamp t to 1.0 to handle Step 3 (Peak 1500) where pk > SOLUTION_PEAK
+          let t = (pk - CONSTANTS.NORMAL_PEAK) / (CONSTANTS.SOLUTION_PEAK - CONSTANTS.NORMAL_PEAK);
+          if (t > 1) t = 1;
+
+          const r = Math.round(242 + (88 - 242) * t);
+          const g = Math.round(201 + (212 - 201) * t);
+          const b = Math.round(76 + (222 - 76) * t);
+          col = `rgb(${r},${g},${b})`;
+        }
+
+        els.area.setAttribute('fill', col);
+
+        allDots.forEach(dot => {
+          const ny = bellCurveY(dot.x, pk);
+          dot.y = ny;
+          if (dot.isPath) {
+            dot.el.setAttribute('d', generateCirclePath(dot.x, ny, 5));
+            dot.el.setAttribute('fill', col);
+          } else {
+            dot.el.setAttribute('cy', ny);
+            dot.el.setAttribute('fill', col);
+          }
+        });
+
+      };
+
+      // Step 1: Move to Normal Peak (1020) - Yellow
+      // Narrative: "We have the solution..."
+      tl.to(proxy, {
+        peak: 1020,
+        duration: 1.2,
+        ease: 'back.out(1.2)',
+        onUpdate: updateGraph
+      }, curveAnimationStart);
+
+      // Pause (0.5s)
+
+      // Step 2: Move Further Right (1500) - Teal (Clamped)
+      // Narrative: "It pushes the curve even further to the right."
+      tl.to(proxy, {
+        peak: 1500,
+        duration: 1.5,
+        ease: 'back.out(1.2)',
+        onUpdate: updateGraph
+      }, curveAnimationStart + 2.0);
+
+      // Final Pause before Access Gap
+
+      // ----------------------------------------
+      // PHASE 6: ACCESS GAP (Sort & Compress X)
+      // ----------------------------------------
+      // Access gap starts after Step 2 finishes (2.0 + 1.5 + pause)
+      const accessGapStart = curveAnimationStart + 4.5;
+
+      tl.to(els.area, { opacity: 0, duration: 0.5 }, accessGapStart + 0.2);
+
+      // Tutoring works image exits to the LEFT
+      tutoringImageEls.forEach((img, i) => {
+        tl.to([img.el, img.imageEl, img.rectEl], {
+          x: -960,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power2.inOut'
+        }, accessGapStart + 0.2);
+      });
+
+      // Sort dots left of threshold to keep curve order
+      const leftDots = allDots.filter(d => d.x < CONSTANTS.THRESHOLD_X).sort((a, b) => a.x - b.x);
+      const rightDots = allDots.filter(d => d.x >= CONSTANTS.THRESHOLD_X);
+
+      // Move dots to their respective groups so they can be animated off-screen later
+      leftDots.forEach(d => els.leftCurve.appendChild(d.el));
+      rightDots.forEach(d => els.rightCurve.appendChild(d.el));
+
+      // Left-side access-gap morph (rolled back from updateGraph hook):
+      // X compresses toward [120..690], Y stays on baseline.
+      const leftMinX = leftDots.length ? Math.min(...leftDots.map(d => d.x)) : 120;
+      const leftMaxX = leftDots.length ? Math.max(...leftDots.map(d => d.x)) : CONSTANTS.THRESHOLD_X;
+      const leftBase = leftDots.map(dot => ({ 
+        dot, 
+        x0: dot.x, 
+        y0: bellCurveY(dot.x, CONSTANTS.CRISIS_PEAK) 
+      }));
+      const leftSpan = Math.max(1, leftMaxX - leftMinX);
+      const leftMorph = { t: 0 };
+      tl.to(leftMorph, {
+        t: 1,
+        duration: 1.0,
+        ease: 'power2.inOut',
+        onUpdate: () => {
+          leftBase.forEach(item => {
+            const pct = (item.x0 - leftMinX) / leftSpan;
+            const targetX = 120 + pct * (690 - 120);
+            const xNew = item.x0 + (targetX - item.x0) * leftMorph.t;
+            const yNew = item.y0;
+            item.dot.x = xNew;
+            item.dot.y = yNew;
+            if (item.dot.isPath) {
+              item.dot.el.setAttribute('d', generateCirclePath(xNew, yNew, 4));
+              item.dot.el.setAttribute('fill', COLORS.crisis);
+            } else {
+              item.dot.el.setAttribute('cx', xNew);
+              item.dot.el.setAttribute('cy', yNew);
+              item.dot.el.setAttribute('r', 4);
+              item.dot.el.setAttribute('fill', COLORS.crisis);
+            }
+          });
+        }
+      }, accessGapStart + 0.5);
+
+      // Right Dots: NO SHIFT (User requirement: "not move away")
+      // They stay at original positions (starting x=1152)
+
+      // Keep threshold line and label visible during access gap
+
+      // Gap Rect: Grow from bottom AFTER dots have moved and paused
+      // Dots move 0.5->1.5. Pause 1.5->2.0. Rect starts 2.0.
+      tl.to(els.gapRect, { opacity: 1, scaleY: 1, duration: 0.8, ease: 'power2.out' }, accessGapStart + 2.0);
+      tl.to('#gap-label', { opacity: 1, duration: 0.5 }, accessGapStart + 2.8);
+
+      // ========================================
+      // THESIS TRANSITION (REVISED v8 - PROPER SEQUENCING)
+      // ========================================
+      // Sequence:
+      // 1. Access gap fully appears (already animated above, done by accessGapStart + 3.3)
+      // 2. PAUSE after gap visible (2.0s)
+      // 3. Dots exit + text fades (1.5s)
+      // 4. Icons appear (0.8s each, staggered)
+      // 5. Badges appear (synced with gap shrink, 2.5s)
+      // 6. Hold (1.0s)
+      // 7. Dissolve all (1.5s)
+      // 8. Blank pause (5s)
+      // 9. Scene B
+
+      // --- Timing anchors ---
+      const gapFullyVisible = accessGapStart + 3.3;   // gap rect + label done
+      const dotsExitStart = gapFullyVisible + 2.0;    // pause, then dots leave
+
+      // 3. Dots Exit & Graph Text Fades
+      const aiDots = Array.from(els.leftCurve.querySelectorAll('circle, path'));
+      const humanDots = Array.from(els.rightCurve.querySelectorAll('circle, path'));
+
+      if (aiDots.length > 0) {
+        tl.to(aiDots, { x: -500, opacity: 0, duration: 1.5, ease: 'power2.in' }, dotsExitStart);
+      }
+      if (humanDots.length > 0) {
+        tl.to(humanDots, { x: 500, opacity: 0, duration: 1.5, ease: 'power2.in' }, dotsExitStart);
+      }
+
+      // Fade graph + access-gap elements together as dots exit
+      tl.to('#graph-title', { opacity: 0, duration: 0.8 }, dotsExitStart);
+      tl.to([els.gapRect, '#gap-label', '#threshold', '#threshold-label'], {
+        opacity: 0,
+        duration: 1.5,
+        ease: 'power2.in'
+      }, dotsExitStart);
+
+      // 4. Icons Appear (after dots mostly gone)
+      const iconAppearStart = dotsExitStart + 1.2;
+      const iconGap = 0.6; // pause between AI and Human for narration
+
+      // AI Icon (Left) - centered via xPercent/yPercent
+      tl.to('#ai-icon-large', {
+        opacity: 1, scale: 1.0, duration: 1.2, ease: 'back.out(1.2)'
+      }, iconAppearStart);
+      tl.to('#ai-icon-label', {
+        opacity: 1, scale: 1.0, duration: 1.2, ease: 'power2.out'
+      }, iconAppearStart + 0.1);
+
+      // Human Icon (Right) - after a short pause
+      tl.to('#human-icon-large', {
+        opacity: 1, scale: 1.0, duration: 1.2, ease: 'back.out(1.2)'
+      }, iconAppearStart + 1.2 + iconGap);
+      tl.to('#human-icon-label', {
+        opacity: 1, scale: 1.0, duration: 1.2, ease: 'power2.out'
+      }, iconAppearStart + 1.3 + iconGap);
+
+      // 5. Badges Appear (synced with gap shrink)
+      const badgesStart = iconAppearStart + 1.2 + iconGap + 1.2 + 0.2;
+      const badgeStagger = 0.55; // slower, narration-friendly pace
+      const aiToHumanPause = 0.45; // small narration pause between AI and Human badge sets
+
+      // Badge rotations for visual interest (tilted angles)
+      const badgeAnimations = [
+        { id: '#ai-badge-1', rotation: -6 },  // Pattern recognition (top)
+        { id: '#ai-badge-2', rotation: -9 },  // Data tracking (left)
+        { id: '#ai-badge-3', rotation: 4 },   // Coordination (bottom)
+        { id: '#human-badge-2', rotation: 7 },  // Motivation (right)
+        { id: '#human-badge-1', rotation: 5 },  // Trust building (top)
+        { id: '#human-badge-3', rotation: -4 }, // Judgment (bottom)
+      ];
+
+      // Stagger badges appearing - each with unique rotation
+      badgeAnimations.forEach((badge, i) => {
+        const pauseOffset = i >= 3 ? aiToHumanPause : 0; // pause after AI's 3 badges
+        tl.to(badge.id, {
+          opacity: 1,
+          scale: 1.0,
+          rotation: badge.rotation,
+          duration: 0.5,
+          ease: 'back.out(1.7)'
+        }, badgesStart + i * badgeStagger + pauseOffset);
+      });
+
+      // Gap shrinks slightly slower than badges appear for a more gradual feel
+      const badgesTotalDuration = badgeStagger * (badgeAnimations.length - 1) + aiToHumanPause + 0.5;
+      const gapShrinkDuration = badgesTotalDuration + 1.5; // ~3.75s - slower pace
+      tl.to(els.gapRect, {
+        scaleX: 0.15,
+        opacity: 0.1,
+        duration: gapShrinkDuration,
+        ease: 'power1.inOut',
+        transformOrigin: '50% 50%'
+      }, badgesStart);
+
+      tl.to('#gap-label', {
+        opacity: 0,
+        duration: gapShrinkDuration,
+        ease: 'power1.inOut'
+      }, badgesStart);
+
+      // 6. Hold (1.0s after gap finishes shrinking)
+
+      // 7. Dissolve All
+      const dissolveStart = badgesStart + gapShrinkDuration + 1.0;
+
+      tl.to(['#ai-icon-large', '#human-icon-large', '#ai-icon-label', '#human-icon-label', '.capability-badge', els.gapRect], {
+        opacity: 0,
+        scale: 0.85,
+        duration: 1.5,
+        ease: 'power2.in'
+      }, dissolveStart);
+
+      // Fade threshold line + label during dissolve
+      tl.to(['#threshold', '#threshold-label'], {
+        opacity: 0,
+        duration: 1.0
+      }, dissolveStart);
+
+      tl.to(els.sceneEnvironment, { opacity: 0, duration: 0.5 }, dissolveStart);
+
+      // 8. BLANK PAUSE (5 seconds)
+
+      // 9. SCENE TRANSITION: A -> B
+      const transitionStart = dissolveStart + 6.5; // 1.5 (dissolve) + 5 (pause)
+
+      tl.to([els.leftCurve], {
+        x: '-100vw', opacity: 0, duration: 1.2, ease: 'power2.in', stagger: 0.01
+      }, transitionStart);
+
+      tl.to([els.rightCurve], {
+        x: '100vw', opacity: 0, duration: 1.2, ease: 'power2.in', stagger: 0.01
+      }, transitionStart);
+
+      tl.to(els.sceneEnvironment, { autoAlpha: 0, duration: 0.5 }, transitionStart);
+
+      // Founder Entrance
+      const sceneBStart = transitionStart + 1.0;
+      tl.set(els.sceneB, { opacity: 1 }, sceneBStart);
+
+      /*
+      // ========================================
+      // Sequence:
+      // 1. Gap Setup (0:28 - 0:31)
+      // 2. PAUSE (0:31 - 0:36) (5s Static)
+      // 3. Thesis Resume (0:36 - 0:44)
+      // 4. Ecosystem (0:46+)
+
+      // Start time logic: accessGapStart is approx 0:28
+      // Fix: Delay start to allow Gap Animation (0:28-0:30) and a brief Pause (0:30-0:33) before transitioning
+      const thesisSequenceStart = accessGapStart + 5.0;
+
+      // 1. Dots & Gap Visualization (Same as before, happening at 0:28-0:31)
+      // No changes needed to the setup lines above (2300-2312)
+
+      // 2. THE PAUSE (0:31 - 0:36)
+      // Use a dummy tween to enforce the pause gap in the timeline logic
+      // essentially we just start the "Resume" at thesisSequenceStart + 8.0s
+      // (3s setup + 5s pause)
+      const resumeStart = thesisSequenceStart + 8.0; // Approx 0:36
+
+      // 3. RESUME: Transition to Thesis (0:36+)
+
+      // A. Dots Exit & Graph Dissolve (0:36 - 0:38)
+      const aiDots = Array.from(els.leftCurve.querySelectorAll('circle, path'));
+      const humanDots = Array.from(els.rightCurve.querySelectorAll('circle, path'));
+
+      if (aiDots.length > 0) {
+        tl.to(aiDots, { x: -500, opacity: 0, duration: 2.0, ease: 'power2.in' }, resumeStart);
+      }
+
+      if (humanDots.length > 0) {
+        tl.to(humanDots, { x: 500, opacity: 0, duration: 2.0, ease: 'power2.in' }, resumeStart);
+      }
+
+      // Hide graph elements
+      tl.to(['#graph-title', '#threshold-label', '#threshold'], {
+        opacity: 0,
+        duration: 0.5
+      }, resumeStart);
+
+      // B. AI Side Appears (0:36 - 0:38)
+      // AI Icon
+      tl.to('#ai-icon-large', { opacity: 1, scale: 1.0, duration: 0.8, ease: 'back.out(1.2)' }, resumeStart);
+
+      // AI Badges
+      const aiBadges = ['#ai-badge-1', '#ai-badge-2', '#ai-badge-3'];
+      tl.to(aiBadges, {
+        opacity: 1,
+        y: 0,
+        scale: 1.0,
+        duration: 0.5,
+        stagger: 0.2,
+        ease: 'back.out(1.7)'
+      }, resumeStart + 0.5);
+
+      // C. Human Side Appears (0:38 - 0:40)
+      const humanSideStart = resumeStart + 2.0; // 0:38
+      // Human Icon
+      tl.to('#human-icon-large', { opacity: 1, scale: 1.0, duration: 0.8, ease: 'back.out(1.2)' }, humanSideStart);
+
+      // Human Badges
+      const humanBadges = ['#human-badge-1', '#human-badge-2', '#human-badge-3'];
+      tl.to(humanBadges, {
+        opacity: 1,
+        y: 0,
+        scale: 1.0,
+        duration: 0.5,
+        stagger: 0.2,
+        ease: 'back.out(1.7)'
+      }, humanSideStart + 0.5);
+
+      // D. Gap Shrinks (0:36 - 0:42)
+      // Starts with Resume, continues
+      tl.to(els.gapRect, {
+        scaleX: 0.05,
+        opacity: 0.3,
+        duration: 6.0,
+        ease: 'none',
+        transformOrigin: '50% 50%'
+      }, resumeStart);
+
+      // E. Dissolve All (0:44 - 0:46)
+      const dissolveStart = humanSideStart + 6.0; // 0:38 + 6 = 0:44
+      tl.to(['#ai-icon-large', '#human-icon-large', '.capability-badge', els.gapRect, '#gap-label'], {
+        opacity: 0,
+        scale: 0.9,
+        duration: 2.0,
+        ease: 'power2.in'
+      }, dissolveStart);
+
+      // Hide graph labels again just in case
+      tl.to(['#graph-title', '#threshold-label', '#threshold', '#gap-label'], {
+        x: -100,
+        opacity: 0,
+        duration: 0.5
+      }, dissolveStart);
+
+      // Hide scene environment
+      tl.to(els.sceneEnvironment, { opacity: 0, duration: 0.5 }, dissolveStart);
+
+      // ========================================
+      // SCENE TRANSITION: A -> B (Starts after dissolve)
+      // ========================================
+      // Connect directly to Ecosystem, skipping Dashboard
+      const transitionStart = dissolveStart + 2.0; // 0:46
+
+      // --- STEP 1: The Parting of the Ways (Clearing Scene A) ---
+      tl.to([els.leftCurve], {
+        x: '-100vw',
+        opacity: 0,
+        duration: 1.2,
+        ease: 'power2.in',
+        stagger: 0.01
+      }, transitionStart);
+
+      tl.to([els.rightCurve], {
+        x: '100vw',
+        opacity: 0,
+        duration: 1.2,
+        ease: 'power2.in',
+        stagger: 0.01
+      }, transitionStart);
+
+      tl.to(els.sceneEnvironment, {
+        autoAlpha: 0,
+        duration: 0.5
+      }, transitionStart);
+
+      // --- STEP 1: Founder Entrance (0:47+) ---
+      const sceneBStart = transitionStart + 1.0;
+
+
+      tl.set(els.sceneB, { opacity: 1 }, sceneBStart);
+
+      */
+      // Force clean entrance with fromTo to overwrite any prior state
+      tl.fromTo(els.centralNode,
+        {
+          autoAlpha: 1,
+          scale: 0.1,
+          x: 0,
+          y: 0,
+          transformOrigin: "50% 50%"
+        },
+        {
+          scale: 2.2,
+          duration: 1.8,
+          ease: 'power3.out'
+        },
+        sceneBStart
+      );
+
+      // Smoothly settle from the overshoot to final center size with no pause.
+      tl.to(els.centralNode, {
+        scale: 1.0,
+        duration: 2.0,
+        ease: 'power2.inOut'
+      }, sceneBStart + 1.8);
+
+      // --- STEP 2: The Setup (0:45 - 0:52) ---
+      // Narrative: "Each contributes what they have. Each receives what they need."
+
+      const setupStart = sceneBStart + 3.8;
+
+      // Founder is already settled to 1.0 by setupStart.
+
+      // Reveal label (background circle removed per user request)
+      const centralLabel = document.getElementById('central-node-label');
+      tl.to(centralLabel, { opacity: 1, duration: 0.5 }, setupStart + 0.3);
+
+      // Reveal Stakeholders (Pop in)
+      const nFoundations = document.getElementById('node-foundations');
+      const nResearchers = document.getElementById('node-researchers');
+      const nSchools = document.getElementById('node-schools');
+      const nTutors = document.getElementById('node-tutors');
+
+      // Set explicit transform origins
+      tl.set(nFoundations, { transformOrigin: "center center", scale: 0, opacity: 1 }, setupStart);
+      tl.set(nTutors, { transformOrigin: "center center", scale: 0, opacity: 1 }, setupStart);
+      tl.set(nSchools, { transformOrigin: "center center", scale: 0, opacity: 1 }, setupStart);
+      tl.set(nResearchers, { transformOrigin: "center center", scale: 0, opacity: 1 }, setupStart);
+
+      const stakeholderNodes = [nFoundations, nResearchers, nSchools, nTutors];
+
+      tl.to(stakeholderNodes, {
+        scale: 1,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'back.out(1.7)'
+      }, setupStart + 1.0);
+
+      // --- STEP 3: The Value Flows (0:52 - 1:05) ---
+      const flowStart = setupStart + 2.0; // Buffer after setup
+
+      const iconContainer = document.getElementById('icon-container');
+      const textContainer = document.getElementById('value-annotations');
+      iconContainer.innerHTML = '';
+      textContainer.innerHTML = '';
+
+      // Helper to create flow animation
+      // Icons and text appear STATICALLY at midpoint (no motion along path)
+      // Lines PERSIST after animation (no fade out for path)
+      const createFlow = (startTime, pathId, iconClass, color, labelText) => {
+        const path = document.getElementById(pathId);
+        if (!path) return;
+
+        const length = path.getTotalLength();
+        const midPoint = path.getPointAtLength(length / 2);
+
+        // 1. DRAW EFFECT: Line draws as dashed from the start
+        // Set up as dashed line, hidden initially
+        tl.set(path, {
+          opacity: 0.8,
+          stroke: color,
+          strokeWidth: 3,
+          strokeDasharray: "15, 10",
+          strokeDashoffset: length  // Fully hidden initially
+        }, startTime);
+
+        // Draw the dashed line from start to end
+        tl.to(path, {
+          strokeDashoffset: 0,  // Fully revealed
+          duration: 1.5,
+          ease: "power2.out"
+        }, startTime);
+
+        // Keep line motion deterministic (no perpetual speed loop).
+        // This avoids late-stage speed artifacts and keeps scrub control stable.
+
+
+        // 2. Icon appears STATICALLY at midpoint
+        const iconEl = document.createElement('div');
+        iconEl.className = 'fa-icon';
+        iconEl.id = `flow-${pathId}-icon`; // Unique ID for cleanup
+        iconEl.style.color = color;
+        iconEl.style.left = `${(midPoint.x / 1920) * 100}%`;
+        iconEl.style.top = `${(midPoint.y / 1080) * 100}%`;
+        iconEl.style.transform = 'translate(-50%, -50%)';
+        iconEl.innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+        iconContainer.appendChild(iconEl);
+
+        // 3. Text appears STATICALLY at midpoint (above icon)
+        const textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textEl.setAttribute("class", "value-annotation");
+        textEl.id = `flow-${pathId}-text`; // Unique ID for cleanup
+        textEl.textContent = labelText;
+        textEl.setAttribute("x", midPoint.x);
+        textEl.setAttribute("y", midPoint.y + 70); // Further below icon (previously +45)
+        textEl.setAttribute("fill", color);
+        textContainer.appendChild(textEl);
+
+        // Fade in icon and text (they PERSIST - no fade out)
+        tl.to(iconEl, { opacity: 1, duration: 0.4 }, startTime + 0.3);
+        tl.to(textEl, { opacity: 1, duration: 0.4 }, startTime + 0.3);
+
+      };
+
+      // Sequence (One at a time, 2.5s duration + 0.3s gap = 2.8s step)
+      let t = flowStart;
+      const step = 2.8;
+
+      // 1. Foundations invest funding
+      createFlow(t, "path-in-foundations", "fa-sack-dollar", "#F2C94C", "Funding");
+      t += step;
+
+      // 2. Tutors receive wages and training
+      createFlow(t, "path-out-tutors", "fa-chalkboard-user", "#F2C94C", "Wages & Training");
+      t += step;
+
+      // 3. Tutors provide teaching
+      createFlow(t, "path-in-tutors", "fa-hand-holding-heart", "#58D4DE", "Teaching");
+      t += step;
+
+      // 4. Schools receive it—completely free
+      createFlow(t, "path-out-schools", "fa-gift", "#27AE60", "Free Teaching");
+      t += step;
+
+      // 5. Schools share students and data
+      createFlow(t, "path-in-schools", "fa-users", "#58D4DE", "Students & Data");
+      t += step;
+
+      // 6. Researchers access insights
+      createFlow(t, "path-out-researchers", "fa-database", "#7F8C8D", "Insights");
+      t += step;
+
+      // 7. Researchers publish findings
+      createFlow(t, "path-in-researchers", "fa-file-pdf", "#9B59B6", "Findings");
+      t += step;
+
+      // 8. Foundations see validated impact
+      createFlow(t, "path-out-foundations", "fa-chart-line", "#FF4F4F", "Validated Impact");
+      t += step;
+
+
+
+      // --- STEP 4: Infrastructure Conclusion (1:05 - 1:10) ---
+      // Narrative: "Every exchange strengthens the system..."
+      // Action: All paths active, Pulse
+      const infraStart = t + 0.5;
+
+      // Fade in all paths lightly
+      tl.to("#highway-paths path", {
+        opacity: 0.5,
+        duration: 1.0
+      }, infraStart);
+
+      // Continuous Loop for all icons (re-add generic looping icons?)
+      // For now, just let the system "breathe"
+
+      // --- EVOLUTION PHASE: Transition to Sustainable Model ---
+      // Phase 1 (2:10-2:13): Foundation Step-Back
+      // Phase 2 (2:13-2:16): System Acceleration
+      // Phase 3 (2:16-2:18): Self-Funding Emergence
+      // Phase 4 (2:18-2:20): System Maturity
+      const evolutionStart = infraStart + 2.0;
+
+      // ================================================================
+      // PHASE 1: Foundation Step-Back (3 seconds)
+      // ================================================================
+
+      // 1a. Dim Foundations Node to 40% (NOT 0!)
+      tl.to('#node-foundations', {
+        opacity: 0.4,
+        duration: 2.0,
+        ease: 'power2.out'
+      }, evolutionStart);
+
+      // 1b. Foundation → Center line dims at 40% opacity (no dash styling change)
+      tl.to('#path-in-foundations', {
+        opacity: 0.4,
+        duration: 2.0,
+        ease: 'power2.out'
+      }, evolutionStart);
+
+      // 1c. "Funding" badge dims to 40% (NOT 0!)
+      tl.to(['#flow-path-in-foundations-icon', '#flow-path-in-foundations-text'], {
+        opacity: 0.4,
+        duration: 2.0,
+        ease: 'power2.out'
+      }, evolutionStart);
+
+      // 1d. Researchers → Foundations line dims to 40% opacity
+      tl.to('#path-out-foundations', {
+        opacity: 0.4,
+        duration: 2.0,
+        ease: 'power2.out'
+      }, evolutionStart);
+
+      // 1e. "Validated Impact" badge dims to 40%
+      tl.to(['#flow-path-out-foundations-icon', '#flow-path-out-foundations-text'], {
+        opacity: 0.4,
+        duration: 2.0,
+        ease: 'power2.out'
+      }, evolutionStart);
+
+      // ================================================================
+      // PHASE 2: System Acceleration (3 seconds, starts at evolutionStart + 3)
+      // ================================================================
+      const evoPhase2Start = evolutionStart + 3.0;
+
+      // Lines to pulse (everything EXCEPT Foundation→Center)
+      const linesToPulse = [
+        '#path-in-tutors',      // Tutors → Center
+        '#path-out-tutors',     // Center → Tutors
+        '#path-out-schools',    // Center → Schools (Free Teaching)
+        '#path-in-schools',     // Schools → Center (Students & Data)
+        '#path-out-researchers',// Center → Researchers
+        '#path-out-foundations' // Researchers → Foundations (Validated Impact)
+      ];
+
+      // Thicken these lines from 2px → 3px
+      tl.to(linesToPulse.join(', '), {
+        strokeWidth: 3,
+        duration: 2.0,
+        ease: 'power2.inOut'
+      }, evoPhase2Start + 1.0);
+
+      // ================================================================
+      // PHASE 3: Self-Funding Emergence (2 seconds, starts at evolutionStart + 6)
+      // ================================================================
+      const evoPhase3Start = evolutionStart + 6.0;
+
+      // 3a. Shrink original school illustration to 0 (it's being replaced by 4 satellites)
+      tl.to('#node-schools .school-illustration', {
+        opacity: 0,
+        scale: 0,
+        transformOrigin: 'center center',
+        duration: 0.8,
+        ease: 'power2.inOut'
+      }, evoPhase3Start);
+
+      // 3b. Schools background circle grows from 250px (r=125) to 280px (r=140)
+      tl.to('#schools-bg-circle', {
+        attr: { r: 140 },
+        duration: 2.0,
+        ease: 'power2.out'
+      }, evoPhase3Start);
+
+      // 3c. Fade in 4 satellite schools (80px each in 2×2 grid)
+      const satelliteSchools = ['#satellite-school-1', '#satellite-school-2', '#satellite-school-3', '#satellite-school-4'];
+
+      // Animate in satellite schools with stagger during Phase 3
+      tl.to(satelliteSchools, {
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: 'back.out(1.5)'
+      }, evoPhase3Start + 0.3);
+
+      // 3c. "Funding" badge dims to 40% (same as node) during Phase 3
+      tl.to(['#flow-path-in-foundations-icon', '#flow-path-in-foundations-text'], {
+        opacity: 0.4,
+        duration: 0.5,
+        ease: 'power2.out'
+      }, evoPhase3Start);
+
+      // ================================================================
+      // 3d. DUAL BADGE ANIMATION for Schools ↔ Center Lines
+      // ================================================================
+
+      // Step 1: Shift existing "Students & Data" badge: 50px left, 30px down
+      // This badge was created by createFlow at line 2128 with IDs: flow-path-in-schools-icon, flow-path-in-schools-text
+      tl.to('#flow-path-in-schools-icon', {
+        x: -50,  // 50px left
+        y: 30,   // 30px down
+        duration: 0.5,
+        ease: 'power2.out'
+      }, evoPhase3Start);
+
+      tl.to('#flow-path-in-schools-text', {
+        attr: { x: '-=50', y: '+=30' },  // SVG text: 50px left, 30px down
+        duration: 0.5,
+        ease: 'power2.out'
+      }, evoPhase3Start);
+
+      // Step 2: Schools → Center line changes to green
+      tl.to('#path-in-schools', {
+        stroke: '#2ECC71',
+        duration: 0.8,
+        ease: 'none'
+      }, evoPhase3Start + 0.8);
+
+      // Step 3: Create and animate "Affordable Payment" badge (60% along line, below)
+      const createAffordablePaymentBadge = () => {
+        const pathEl = document.getElementById('path-in-schools');
+        if (!pathEl) return null;
+        const len = pathEl.getTotalLength();
+        const point60 = pathEl.getPointAtLength(len * 0.6);  // 60% along line
+
+        // Create icon
+        const iconEl = document.createElement('div');
+        iconEl.id = 'affordable-payment-icon';
+        iconEl.className = 'fa-icon';
+        iconEl.style.color = '#2ECC71';
+        iconEl.style.opacity = '0';
+        iconEl.style.left = `${((point60.x + 70) / 1920) * 100}%`;  // +70px right
+        iconEl.style.top = `${((point60.y + 20 - 25) / 1080) * 100}%`;  // +20px below line, but 25px up (so 5px above line Y)
+        iconEl.style.transform = 'translate(-50%, -50%) scale(0.8)';
+        iconEl.innerHTML = '<i class="fa-solid fa-dollar-sign"></i>';
+        document.getElementById('icon-container').appendChild(iconEl);
+
+        // Create text
+        const textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textEl.id = 'affordable-payment-text';
+        textEl.setAttribute("class", "value-annotation");
+        textEl.textContent = 'Affordable Payment';
+        textEl.setAttribute("x", point60.x + 70);  // +70px right
+        textEl.setAttribute("y", point60.y + 90 - 25);  // Below icon, shifted up 25px total (5px above original baseline)
+        textEl.setAttribute("fill", '#2ECC71');
+        textEl.style.opacity = '0';
+        textEl.setAttribute("text-anchor", "middle");
+        textEl.setAttribute("font-size", "14");
+        textEl.setAttribute("font-weight", "500");
+        document.getElementById('value-annotations').appendChild(textEl);
+
+        return { iconEl, textEl };
+      };
+
+      const paymentBadge = createAffordablePaymentBadge();
+      if (paymentBadge) {
+        tl.to(paymentBadge.iconEl, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: 'back.out(1.2)'
+        }, evoPhase3Start + 0.8);
+        tl.to(paymentBadge.textEl, { opacity: 1, duration: 0.8 }, evoPhase3Start + 0.8);
+      }
+
+      // Step 4: "Free Teaching" → "Quality Teaching" transition on Center → Schools line
+      // Fade out existing "Free Teaching" badge
+      tl.to(['#flow-path-out-schools-icon', '#flow-path-out-schools-text'], {
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      }, evoPhase3Start);
+
+      // Create and fade in "Quality Teaching" badge
+      const createQualityTeachingBadge = () => {
+        const pathEl = document.getElementById('path-out-schools');
+        if (!pathEl) return null;
+        const len = pathEl.getTotalLength();
+        const midPoint = pathEl.getPointAtLength(len / 2);
+
+        // Create icon (graduation cap)
+        const iconEl = document.createElement('div');
+        iconEl.id = 'quality-teaching-icon';
+        iconEl.className = 'fa-icon';
+        iconEl.style.color = '#27AE60';
+        iconEl.style.opacity = '0';
+        iconEl.style.left = `${(midPoint.x / 1920) * 100}%`;
+        iconEl.style.top = `${(midPoint.y / 1080) * 100}%`;
+        iconEl.style.transform = 'translate(-50%, -50%)';
+        iconEl.innerHTML = '<i class="fa-solid fa-graduation-cap"></i>';
+        document.getElementById('icon-container').appendChild(iconEl);
+
+        // Create text
+        const textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textEl.id = 'quality-teaching-text';
+        textEl.setAttribute("class", "value-annotation");
+        textEl.textContent = 'Quality Teaching';
+        textEl.setAttribute("x", midPoint.x);
+        textEl.setAttribute("y", midPoint.y + 70);
+        textEl.setAttribute("fill", '#27AE60');
+        textEl.style.opacity = '0';
+        textEl.setAttribute("text-anchor", "middle");
+        textEl.setAttribute("font-size", "14");
+        textEl.setAttribute("font-weight", "500");
+        document.getElementById('value-annotations').appendChild(textEl);
+
+        return { iconEl, textEl };
+      };
+
+      const qualityBadge = createQualityTeachingBadge();
+      if (qualityBadge) {
+        tl.to(qualityBadge.iconEl, { opacity: 1, duration: 0.8 }, evoPhase3Start + 1.0);
+        tl.to(qualityBadge.textEl, { opacity: 1, duration: 0.8 }, evoPhase3Start + 1.0);
+      }
+
+      // ================================================================
+      // PHASE 4: System Maturity (2 seconds, starts at evolutionStart + 8)
+      // ================================================================
+      const evoPhase4Start = evolutionStart + 8.0;
+
+      // 4a. Schools → Center line thickens to 5px
+      tl.to('#path-in-schools', {
+        strokeWidth: 5,
+        duration: 1.5,
+        ease: 'power2.out'
+      }, evoPhase4Start);
+
+      // 4b. Center → Researchers line thickens to 5px
+      tl.to('#path-out-researchers', {
+        strokeWidth: 5,
+        duration: 1.5,
+        ease: 'power2.out'
+      }, evoPhase4Start);
+
+      // 4c/4d removed per direction: no node wiggle or line brightness pulse.
+
+      // ================================================================
+      // PHASE 5: Cost Transformation (2:20 - 2:34)
+      // ================================================================
+      const costStart = evolutionStart + 20.0; // 2:20
+
+      // Step 1: Fade out ecosystem & Reposition Logo (2:20-2:22.5)
+      const ecoTargets = [
+        '.ecosystem-nodes', // Stakeholder nodes
+        '#network-lines',
+        '#highway-paths',
+        '#evolution-paths',
+        '#path-in-tutors', '#path-out-tutors',
+        '#path-in-schools', '#path-out-schools',
+        '#path-in-researchers', '#path-out-researchers',
+        '#icon-container',  // HTML badges
+        '#value-annotations', // SVG text badges
+        '#central-node-label', // "PLUS Tutoring Platform" text
+        '.satellite-school-group', // Satellite schools (if any remain)
+        // Keep non-foundation lines steady; no dim animation on them.
+        // Only foundation-connected lines should fade/dim during this period.
+        '#path-in-foundations', '#path-out-foundations',
+      ];
+
+      tl.to(ecoTargets, {
+        opacity: 0,
+        duration: 2.5,
+        ease: 'power2.out'
+      }, costStart);
+
+      // Freeze all line dash offsets at handoff so no lingering drift remains.
+      tl.set([
+        '#highway-paths path',
+        '#evolution-paths path',
+        '#path-in-foundations', '#path-out-foundations',
+        '#path-in-tutors', '#path-out-tutors',
+        '#path-in-schools', '#path-out-schools',
+        '#path-in-researchers', '#path-out-researchers'
+      ], {
+        strokeDashoffset: 0
+      }, costStart);
+
+      // Force hide satellite schools separately to be sure
+      tl.to(['#satellite-school-1', '#satellite-school-2', '#satellite-school-3', '#satellite-school-4'], {
+        opacity: 0,
+        duration: 2.5
+      }, costStart);
+
+      // Reposition Central Node Logo: UP 90px (from 540->450) and SCALE to 0.85
+      // transformOrigin 50% 50% ensures it shrinks from its own center
+      tl.set('#central-node', { x: 0 }, costStart);
+      tl.to('#central-node', {
+        y: -90,
+        scale: 0.85,
+        transformOrigin: '50% 50%',
+        duration: 2.5,
+        ease: 'power2.inOut'
+      }, costStart);
+
+      // Step 2: Fade in Cost Text (2:23-2:24.5, 1.5 seconds)
+      // "$2,000 per student per month" at 100% opacity (CRITICAL: full opacity)
+      tl.fromTo(['#cost-display-text', '#cost-subtitle'],
+        { y: 10, opacity: 0 },
+        { y: 0, opacity: 1.0, duration: 1.5, ease: 'power2.out' },
+        costStart + 3.0
+      );
+
+      // Keep deterministic equal spacing while "$2,000" is on screen.
+      const slots2000Hold = centeredSlotsFromSteps(COST_2000_STEPS);
+      tl.set('#cost-currency', { attr: { x: slots2000Hold[0] } }, costStart + 3.0);
+      tl.set('#cost-digit-2', { attr: { x: slots2000Hold[1] } }, costStart + 3.0);
+      tl.set('#cost-comma', { attr: { x: slots2000Hold[2] } }, costStart + 3.0);
+      tl.set('#cost-zero-1', { attr: { x: slots2000Hold[3] } }, costStart + 3.0);
+      tl.set('#cost-zero-2', { attr: { x: slots2000Hold[4] } }, costStart + 3.0);
+      tl.set('#cost-zero-3', { attr: { x: slots2000Hold[5] } }, costStart + 3.0);
+      tl.set(['#cost-currency', '#cost-digit-2', '#cost-comma', '#cost-zero-1', '#cost-zero-2', '#cost-zero-3'], {
+        x: 0,
+        opacity: 1
+      }, costStart + 3.0);
+
+      // Hold state: 2:24.5-2:28 (3.5 seconds) - Display at full opacity
+      // No animation needed, just wait
+
+      // Step 3: Transformation $2,000 -> $20 (2:28-2:31)
+      const transStart = costStart + 8.0; // 2:28
+      const finalFrameStart = costStart + 14.0; // 2:34
+
+      // Keep logo centered (x) during cost display window to avoid inherited drift from prior scenes.
+      tl.to('#central-node', {
+        x: 0,
+        duration: finalFrameStart - costStart,
+        ease: 'none'
+      }, costStart);
+
+      // 3a. Simply drop ",00" (comma + last two zeros) to form "$20".
+      tl.to(['#cost-comma', '#cost-zero-2', '#cost-zero-3'], {
+        opacity: 0,
+        duration: 0.35,
+        ease: 'power1.out'
+      }, transStart);
+
+      // Optical center for "$20": place "2" near page center to avoid right-heavy reading.
+      const costCenterX = 945;
+
+      // 3b. "$20" becomes prominent and stays centered.
+      tl.to('#cost-display-text', {
+        scale: 1.5,
+        opacity: 1.0,
+        x: 0,
+        y: 24,
+        svgOrigin: `${costCenterX} 680`,
+        duration: 1.2,
+        ease: 'power2.out'
+      }, transStart + 0.5);
+
+      // Re-center the surviving "$20" glyphs as one centered unit.
+      const slots20 = centeredSlots(3, COST_STEP_20, costCenterX);
+      tl.to('#cost-currency', { attr: { x: slots20[0] }, duration: 1.2, ease: 'power2.out' }, transStart + 0.5);
+      tl.to('#cost-digit-2', { attr: { x: slots20[1] - 10 }, duration: 1.2, ease: 'power2.out' }, transStart + 0.5);
+      tl.to('#cost-zero-1', { attr: { x: slots20[2] - 10 }, duration: 1.2, ease: 'power2.out' }, transStart + 0.5);
+      tl.set(['#cost-currency', '#cost-digit-2', '#cost-zero-1'], { x: 0 }, transStart + 2.01);
+
+      // Keep subtitle centered under "$20" as the headline shifts.
+      tl.to('#cost-subtitle', {
+        x: 0,
+        y: 24,
+        opacity: 1.0,
+        duration: 1.2,
+        ease: 'power2.out'
+      }, transStart + 0.5);
+
+      // Step 4: Final frame transition (2:34-2:40)
+
+      // Map logo target directly from Figma Page 8 reference node (1600x900).
+      const getBottomRightLogoTarget = () => {
+        const vb = svg.viewBox.baseVal;
+        const nodeImage = document.getElementById('central-node-image');
+        const logoW = parseFloat(nodeImage.getAttribute('width')) || 324;
+        const ref = { frameW: 1600, frameH: 900, x: 1440, y: 740, w: 160, h: 160 };
+        const cx = ((ref.x + (ref.w / 2)) / ref.frameW) * vb.width;
+        const cy = ((ref.y + (ref.h / 2)) / ref.frameH) * vb.height;
+        return {
+          x: cx - 960,
+          y: cy - 540,
+          scale: (((ref.w / ref.frameW) * vb.width) / logoW)
+        };
+      };
+
+      const logoTarget = getBottomRightLogoTarget();
+
+      // Step 4A: cost text fades out (2:34-2:35)
+      tl.to(['#cost-display-text', '#cost-subtitle'], {
+        opacity: 0,
+        duration: 1.0,
+        ease: 'power1.in'
+      }, finalFrameStart);
+
+      // Step 4B: logo moves directly to bottom-right while shrinking.
+      // Slightly slower to complement staggered text reveal.
+      const logoMoveStart = finalFrameStart + 0.45;
+      tl.to('#central-node', {
+        x: logoTarget.x,
+        y: logoTarget.y,
+        scale: logoTarget.scale,
+        transformOrigin: '50% 50%',
+        duration: 2.0,
+        ease: 'power2.out'
+      }, logoMoveStart);
+
+      // Transition background to final beige.
+      tl.to('.svg-wrapper, #canvas', {
+        backgroundColor: '#F5F1E8',
+        duration: 0.8,
+        ease: 'power1.out'
+      }, finalFrameStart);
+
+      // Step 5: character-by-character reveal, overlapping logo movement.
+      tl.set('#final-frame-container', { opacity: 1 }, finalFrameStart + 0.5);
+      tl.to('#char-a', { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, finalFrameStart + 0.5);
+      tl.to('#char-p, #char-l, #char-u, #char-s', {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+        stagger: 0.08
+      }, finalFrameStart + 0.9);
+      tl.to('#char-f, #char-o, #char-r', {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+        stagger: 0.08
+      }, finalFrameStart + 1.54);
+      tl.to('#char-e, #char-v, #char-e2, #char-r2, #char-y', {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+        stagger: 0.08
+      }, finalFrameStart + 2.1);
+      tl.to('#char-c, #char-l2, #char-a2, #char-s2, #char-s3', {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: 'power2.out',
+        stagger: 0.08
+      }, finalFrameStart + 2.82);
+
+      // Step 6: blob/pencil stagger reveal (2:37.54-2:38.54).
+      const blobStart = finalFrameStart + 3.54;
+      const blobTargets = ['#blob-pencil', '#blob-1', '#blob-2', '#blob-3', '#blob-4', '#blob-5'];
+      blobTargets.forEach((selector, index) => {
+        tl.to(selector, {
+          opacity: 1,
+          scale: 1,
+          duration: 0.6,
+          ease: 'back.out(1.4)'
+        }, blobStart + (index * 0.08));
+      });
+
+      // Step 7: final hold (2:38.6-2:40).
+      tl.to({}, {
+        duration: 1.4
+      }, finalFrameStart + 4.6);
+
+    } // End of buildTimeline function
+
+    // ========================================
+    // HELPERS
+    // ========================================
+
+    /**
+     * Starts the breathing pulse timeline on the four nodes (1.0 → 1.05 → 1.0, 2s cycle).
+     * Called when main timeline completes so scrubber stays finite.
+     */
+    function startPulseTimeline() {
+      const nodes = [
+        document.getElementById('node-foundations'),
+        document.getElementById('node-researchers'),
+        document.getElementById('node-schools'),
+        document.getElementById('node-tutors')
+      ].filter(Boolean);
+
+      if (nodes.length === 0) return;
+      pulseTl = gsap.timeline({ repeat: -1 });
+      nodes.forEach((g, i) => {
+        // Find the image or circle to pulse
+        const target = g.querySelector('image') || g;
+        pulseTl.to(target, {
+          scale: 1.05,
+          duration: 1.5,
+          ease: 'sine.inOut',
+          transformOrigin: '50% 50%',
+          yoyo: true,
+          repeat: 1
+        }, i * 0.2);
+      });
+    }
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+      return `${m}:${sec.toString().padStart(2, '0')}`;
+    }
+
+    /**
+     * Toggle play/pause state of timeline
+     */
+    function togglePlay() {
+      if (!tl) buildTimeline();
+      if (tl.paused()) { tl.play(); document.getElementById('playBtn').classList.add('playing'); }
+      else { tl.pause(); document.getElementById('playBtn').classList.remove('playing'); }
+    }
+
+    /**
+     * Toggle controls panel collapsed/expanded state
+     */
+    function toggleControls() {
+      const container = document.getElementById('controlsContainer');
+      const icon = document.getElementById('toggleIcon');
+      container.classList.toggle('collapsed');
+      icon.textContent = container.classList.contains('collapsed') ? '▲' : '▼';
+    }
+
+    /**
+     * Restart timeline from beginning
+     */
+    function restart() {
+      if (!tl) buildTimeline();
+      tl.restart();
+      document.getElementById('playBtn').classList.add('playing');
+    }
+
+    /**
+     * Keyboard shortcuts handler
+     */
+    document.addEventListener('keydown', (e) => {
+      // Ignore if typing in an input field
+      if (e.target.tagName === 'INPUT') return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+      } else if (e.code === 'KeyR') {
+        e.preventDefault();
+        restart();
+      }
+    });
+
+    document.querySelectorAll('input[type="number"]').forEach(i => i.addEventListener('change', buildTimeline));
+    document.getElementById('scrubber').addEventListener('input', e => {
+      if (!tl) buildTimeline();
+      if (pulseTl) { pulseTl.kill(); pulseTl = null; }
+      tl.pause();
+      const pct = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+      const T = getTiming();
+      // Use absolute timeline time so scrubbing remains stable across section duration changes.
+      tl.time((pct / 100) * T.total);
+    });
+
+    // Start
+    window.onload = () => { buildTimeline(); };
+  </script>
+</body>
+
+</html>

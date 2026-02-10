@@ -1,0 +1,26 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 50.2581 68.2" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="13 - y" opacity="0.8" filter="url(#filter0_n_0_16)">
+<path d="M47.1298 0C49.3693 0 50.8818 2.28646 50.0057 4.3475L24.0537 65.4C23.6204 66.3333 23.0871 67.0333 22.4537 67.5C21.8537 67.9667 20.8871 68.2 19.5537 68.2H14.2199C11.9312 68.2 10.4189 65.8209 11.3903 63.7486L18.4534 48.6808C18.835 47.8667 18.8475 46.9277 18.4876 46.1037L0.264622 4.37566C-0.636933 2.31123 0.875739 0 3.12844 0H10.4537C11.5537 0 12.4037 0.25 13.0037 0.749999C13.6037 1.25 14.0371 1.83333 14.3037 2.5L24.1037 27.15C24.4704 28.1167 24.7871 29.1 25.0537 30.1C25.3142 30.9392 26.5521 30.957 26.8396 30.1266C27.1891 29.1178 27.5604 28.1089 27.9537 27.1L37.0537 2.5C37.3204 1.76667 37.8037 1.16667 38.5037 0.699997C39.2037 0.233332 39.9704 0 40.8037 0H47.1298Z" fill="var(--fill-0, #1E1F24)"/>
+</g>
+<defs>
+<filter id="filter0_n_0_16" x="0" y="0" width="50.2581" height="68.2" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="1.2799999713897705 1.2799999713897705" stitchTiles="stitch" numOctaves="3" result="noise" seed="302" />
+<feComponentTransfer in="noise" result="coloredNoise1">
+<feFuncR type="linear" slope="2" intercept="-0.5" />
+<feFuncG type="linear" slope="2" intercept="-0.5" />
+<feFuncB type="linear" slope="2" intercept="-0.5" />
+<feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feComponentTransfer in="noise1Clipped" result="color1">
+<feFuncA type="table" tableValues="0 0.1" />
+</feComponentTransfer>
+<feMerge result="effect1_noise_0_16">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+</filter>
+</defs>
+</svg>

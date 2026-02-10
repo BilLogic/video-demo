@@ -1,0 +1,26 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 50.0859 51.55" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="10 - v" opacity="0.8" filter="url(#filter0_n_0_21)">
+<path d="M46.9579 0C49.1605 0 50.6719 2.21752 49.8666 4.26758L32.0717 49.5676C31.6019 50.7635 30.448 51.55 29.1631 51.55H20.9229C19.638 51.55 18.484 50.7635 18.0142 49.5676L0.219377 4.26758C-0.585931 2.21753 0.925454 0 3.12801 0H9.99297C10.993 0 11.8263 0.233332 12.493 0.699997C13.1596 1.16667 13.6263 1.76667 13.893 2.5L22.543 28C23.1096 29.7333 23.6096 31.4333 24.043 33.1C24.3392 34.2166 26.0967 34.2166 26.393 33.1C26.8596 31.4333 27.393 29.7333 27.993 28L36.943 2.5C37.1763 1.76667 37.6263 1.16667 38.293 0.699997C38.9596 0.233332 39.743 0 40.643 0H46.9579Z" fill="var(--fill-0, #1E1F24)"/>
+</g>
+<defs>
+<filter id="filter0_n_0_21" x="0" y="0" width="50.0859" height="51.55" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="1.2799999713897705 1.2799999713897705" stitchTiles="stitch" numOctaves="3" result="noise" seed="302" />
+<feComponentTransfer in="noise" result="coloredNoise1">
+<feFuncR type="linear" slope="2" intercept="-0.5" />
+<feFuncG type="linear" slope="2" intercept="-0.5" />
+<feFuncB type="linear" slope="2" intercept="-0.5" />
+<feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feComponentTransfer in="noise1Clipped" result="color1">
+<feFuncA type="table" tableValues="0 0.1" />
+</feComponentTransfer>
+<feMerge result="effect1_noise_0_21">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+</filter>
+</defs>
+</svg>
