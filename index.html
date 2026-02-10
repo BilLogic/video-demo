@@ -1100,54 +1100,45 @@
           <line id="demo-bg-3" class="demo-progress-bg" x1="1138" y1="960" x2="1382" y2="960" />
 
           <!-- Foreground fill lines (teal, animated via stroke-dashoffset) -->
-          <line id="demo-fill-1" class="demo-progress-fill"
-            x1="538" y1="960" x2="782" y2="960"
-            stroke-dasharray="244" stroke-dashoffset="244" />
-          <line id="demo-fill-2" class="demo-progress-fill"
-            x1="838" y1="960" x2="1082" y2="960"
-            stroke-dasharray="244" stroke-dashoffset="244" />
-          <line id="demo-fill-3" class="demo-progress-fill"
-            x1="1138" y1="960" x2="1382" y2="960"
-            stroke-dasharray="244" stroke-dashoffset="244" />
+          <line id="demo-fill-1" class="demo-progress-fill" x1="538" y1="960" x2="782" y2="960" stroke-dasharray="244"
+            stroke-dashoffset="244" />
+          <line id="demo-fill-2" class="demo-progress-fill" x1="838" y1="960" x2="1082" y2="960" stroke-dasharray="244"
+            stroke-dashoffset="244" />
+          <line id="demo-fill-3" class="demo-progress-fill" x1="1138" y1="960" x2="1382" y2="960" stroke-dasharray="244"
+            stroke-dashoffset="244" />
 
           <!-- Node 01: Pre-session Coach -->
           <g id="demo-node-1">
-            <circle id="demo-circle-1" class="demo-stepper-circle"
-              cx="510" cy="960" r="28" fill="transparent" stroke="#C4C4C4" />
-            <text id="demo-number-1" class="demo-stepper-number"
-              x="510" y="960" fill="#757575">01</text>
-            <text id="demo-label-1" class="demo-stepper-label"
-              x="510" y="1018" fill="#757575">Pre-session Coach</text>
+            <circle id="demo-circle-1" class="demo-stepper-circle" cx="510" cy="960" r="28" fill="transparent"
+              stroke="#C4C4C4" />
+            <text id="demo-number-1" class="demo-stepper-number" x="510" y="960" fill="#757575">01</text>
+            <text id="demo-label-1" class="demo-stepper-label" x="510" y="1018" fill="#757575">Pre-session Coach</text>
           </g>
 
           <!-- Node 02: In-session Co-pilot -->
           <g id="demo-node-2">
-            <circle id="demo-circle-2" class="demo-stepper-circle"
-              cx="810" cy="960" r="28" fill="transparent" stroke="#C4C4C4" />
-            <text id="demo-number-2" class="demo-stepper-number"
-              x="810" y="960" fill="#757575">02</text>
-            <text id="demo-label-2" class="demo-stepper-label"
-              x="810" y="1018" fill="#757575">In-session Co-pilot</text>
+            <circle id="demo-circle-2" class="demo-stepper-circle" cx="810" cy="960" r="28" fill="transparent"
+              stroke="#C4C4C4" />
+            <text id="demo-number-2" class="demo-stepper-number" x="810" y="960" fill="#757575">02</text>
+            <text id="demo-label-2" class="demo-stepper-label" x="810" y="1018" fill="#757575">In-session
+              Co-pilot</text>
           </g>
 
           <!-- Node 03: Post-session Companion -->
           <g id="demo-node-3">
-            <circle id="demo-circle-3" class="demo-stepper-circle"
-              cx="1110" cy="960" r="28" fill="transparent" stroke="#C4C4C4" />
-            <text id="demo-number-3" class="demo-stepper-number"
-              x="1110" y="960" fill="#757575">03</text>
-            <text id="demo-label-3" class="demo-stepper-label"
-              x="1110" y="1018" fill="#757575">Post-session Companion</text>
+            <circle id="demo-circle-3" class="demo-stepper-circle" cx="1110" cy="960" r="28" fill="transparent"
+              stroke="#C4C4C4" />
+            <text id="demo-number-3" class="demo-stepper-number" x="1110" y="960" fill="#757575">03</text>
+            <text id="demo-label-3" class="demo-stepper-label" x="1110" y="1018" fill="#757575">Post-session
+              Companion</text>
           </g>
 
           <!-- Node 04: Repeat -->
           <g id="demo-node-4">
-            <circle id="demo-circle-4" class="demo-stepper-circle"
-              cx="1410" cy="960" r="28" fill="transparent" stroke="#C4C4C4" />
-            <text id="demo-number-4" class="demo-stepper-number"
-              x="1410" y="960" fill="#757575">04</text>
-            <text id="demo-label-4" class="demo-stepper-label"
-              x="1410" y="1018" fill="#757575">Repeat</text>
+            <circle id="demo-circle-4" class="demo-stepper-circle" cx="1410" cy="960" r="28" fill="transparent"
+              stroke="#C4C4C4" />
+            <text id="demo-number-4" class="demo-stepper-number" x="1410" y="960" fill="#757575">04</text>
+            <text id="demo-label-4" class="demo-stepper-label" x="1410" y="1018" fill="#757575">Repeat</text>
           </g>
         </g>
 
@@ -1357,7 +1348,7 @@
           <!-- Main Cost Value: $2,000 -> $20 -->
           <!-- Lato Bold 96pt, #0472A8 -->
           <!-- Using dx for equal character spacing -->
-          <text id="cost-display-text" class="cost-number" x="0" y="680" text-anchor="start"
+          <text id="cost-display-text" class="cost-number" x="0" y="680" text-anchor="middle"
             font-family="Lato, sans-serif" font-weight="700" font-size="96" fill="#0472A8" opacity="0">
             <tspan id="cost-currency">$</tspan>
             <tspan id="cost-digit-2" dx="0">2</tspan>
@@ -1597,40 +1588,33 @@
       <div class="settings-panel">
         <span>DURATIONS (s):</span>
         <div class="phase-input-group"><label>Problem</label><input type="number" id="dur-problem" value="22.0"
-            step="0.5">
-        </div>
-        <div class="phase-input-group"><label>Thesis</label><input type="number" id="dur-thesis" value="20.0"
-            step="0.5">
-        </div>
-        <div class="phase-input-group"><label>Phase1</label><input type="number" id="dur-phase1" value="14.0"
             step="0.5"></div>
-        <div class="phase-input-group"><label>Phase2</label><input type="number" id="dur-phase2" value="20.0"
-            step="0.5">
+        <div class="phase-input-group"><label>Thesis</label><input type="number" id="dur-thesis" value="20.0"
+            step="0.5"></div>
+        <div class="phase-input-group"><label>Demo 1</label><input type="number" id="dur-demo1" value="10.0" step="0.5">
         </div>
-        <div class="phase-input-group"><label>Phase3</label><input type="number" id="dur-phase3" value="22.0"
-            step="0.5">
+        <div class="phase-input-group"><label>Demo 2</label><input type="number" id="dur-demo2" value="10.0" step="0.5">
+        </div>
+        <div class="phase-input-group"><label>Demo 3</label><input type="number" id="dur-demo3" value="10.0" step="0.5">
+        </div>
+        <div class="phase-input-group"><label>Demo 4</label><input type="number" id="dur-demo4" value="10.0" step="0.5">
         </div>
         <div class="phase-input-group"><label>System</label><input type="number" id="dur-system" value="18.0"
             step="0.5"></div>
-        <div class="phase-input-group"><label>Admin</label><input type="number" id="dur-admin" value="14.0" step="0.5">
-        </div>
-        <div class="phase-input-group"><label>Evolve</label><input type="number" id="dur-evolve" value="10.0"
-            step="0.5">
-        </div>
-        <div class="phase-input-group"><label>Close</label><input type="number" id="dur-close" value="70.0" min="70"
-            step="0.5">
-        </div>
-        <span style="margin-left: 12px; color: #58D4DE;">|</span>
-        <span>DEMO:</span>
-        <div class="phase-input-group"><label>Demo1</label><input type="number" id="dur-demo1" value="5.0" step="0.5"></div>
-        <div class="phase-input-group"><label>Demo2</label><input type="number" id="dur-demo2" value="5.0" step="0.5"></div>
-        <div class="phase-input-group"><label>Demo3</label><input type="number" id="dur-demo3" value="5.0" step="0.5"></div>
-        <div class="phase-input-group"><label>Demo4</label><input type="number" id="dur-demo4" value="5.0" step="0.5"></div>
+        <div class="phase-input-group"><label>Admin Demo</label><input type="number" id="dur-admin" value="14.0"
+            step="0.5"></div>
+        <div class="phase-input-group"><label>Evolution</label><input type="number" id="dur-evolve" value="10.0"
+            step="0.5"></div>
+        <div class="phase-input-group"><label>Economy</label><input type="number" id="dur-economy" value="10.0"
+            step="0.5"></div>
+        <div class="phase-input-group"><label>Ending</label><input type="number" id="dur-ending" value="10.0"
+            step="0.5"></div>
         <span style="margin-left: 12px; color: #58D4DE;">|</span>
         <span>PACING:</span>
         <div class="preset-group">
           <button class="preset-btn" data-preset="calm" onclick="applyPacingPreset('calm')">Calm</button>
-          <button class="preset-btn active" data-preset="balanced" onclick="applyPacingPreset('balanced')">Balanced</button>
+          <button class="preset-btn active" data-preset="balanced"
+            onclick="applyPacingPreset('balanced')">Balanced</button>
           <button class="preset-btn" data-preset="punchy" onclick="applyPacingPreset('punchy')">Punchy</button>
         </div>
       </div>
@@ -1676,49 +1660,16 @@
 
     const PACING_PRESETS = {
       calm: {
-        'dur-problem': 24.0,
-        'dur-thesis': 22.0,
-        'dur-phase1': 15.0,
-        'dur-phase2': 22.0,
-        'dur-phase3': 24.0,
-        'dur-system': 19.0,
-        'dur-admin': 15.0,
-        'dur-evolve': 11.0,
-        'dur-close': 72.0,
-        'dur-demo1': 5.5,
-        'dur-demo2': 5.5,
-        'dur-demo3': 5.5,
-        'dur-demo4': 5.5
+        'dur-problem': 24.0, 'dur-thesis': 22.0, 'dur-demo1': 11.0, 'dur-demo2': 11.0, 'dur-demo3': 11.0, 'dur-demo4': 11.0,
+        'dur-system': 19.0, 'dur-admin': 15.0, 'dur-evolve': 11.0, 'dur-economy': 11.0, 'dur-ending': 11.0
       },
       balanced: {
-        'dur-problem': 22.0,
-        'dur-thesis': 20.0,
-        'dur-phase1': 14.0,
-        'dur-phase2': 20.0,
-        'dur-phase3': 22.0,
-        'dur-system': 18.0,
-        'dur-admin': 14.0,
-        'dur-evolve': 10.0,
-        'dur-close': 70.0,
-        'dur-demo1': 5.0,
-        'dur-demo2': 5.0,
-        'dur-demo3': 5.0,
-        'dur-demo4': 5.0
+        'dur-problem': 22.0, 'dur-thesis': 20.0, 'dur-demo1': 10.0, 'dur-demo2': 10.0, 'dur-demo3': 10.0, 'dur-demo4': 10.0,
+        'dur-system': 18.0, 'dur-admin': 14.0, 'dur-evolve': 10.0, 'dur-economy': 10.0, 'dur-ending': 10.0
       },
       punchy: {
-        'dur-problem': 20.0,
-        'dur-thesis': 18.0,
-        'dur-phase1': 13.0,
-        'dur-phase2': 18.0,
-        'dur-phase3': 20.0,
-        'dur-system': 16.0,
-        'dur-admin': 13.0,
-        'dur-evolve': 9.0,
-        'dur-close': 70.0,
-        'dur-demo1': 4.5,
-        'dur-demo2': 4.5,
-        'dur-demo3': 4.5,
-        'dur-demo4': 4.5
+        'dur-problem': 20.0, 'dur-thesis': 18.0, 'dur-demo1': 9.0, 'dur-demo2': 9.0, 'dur-demo3': 9.0, 'dur-demo4': 9.0,
+        'dur-system': 16.0, 'dur-admin': 12.0, 'dur-evolve': 9.0, 'dur-economy': 9.0, 'dur-ending': 9.0
       }
     };
 
@@ -1728,83 +1679,90 @@
     function getTiming() {
       const getVal = (id, def) => parseFloat(document.getElementById(id).value) || def;
 
-      // Main section durations from control bar (matching director's notes)
+      // Map durations from control bar (aligned with Director's Notes)
       const d = {
-        problem: getVal('dur-problem', 22.0),   // Problem Setup
-        thesis: getVal('dur-thesis', 20.0),     // Thesis + Rationale
-        phase1: getVal('dur-phase1', 14.0),     // Phase 1: Pre-session Training (0:42-0:56)
-        phase2: getVal('dur-phase2', 20.0),     // Phase 2: During Session (0:56-1:16)
-        phase3: getVal('dur-phase3', 22.0),     // Phase 3: Post-session Reflection (1:16-1:38)
-        system: getVal('dur-system', 18.0),     // System Reveal
-        admin: getVal('dur-admin', 14.0),       // Admin/Researcher Views
-        evolve: getVal('dur-evolve', 10.0),     // System Evolution (2:18-2:28)
-        close: Math.max(70.0, getVal('dur-close', 70.0)), // Economic Transformation + Close extended so total defaults to 3:30
-        demo1: getVal('dur-demo1', 5.0),
-        demo2: getVal('dur-demo2', 5.0),
-        demo3: getVal('dur-demo3', 5.0),
-        demo4: getVal('dur-demo4', 5.0)
-      };
-
-      // Sub-phase durations within Problem Setup (proportional to 28s total)
-      // These break down the Problem section into the animation phases
-      const problemSubPhases = {
-        entrance: 3.5,  // Sparkle entrance
-        network: 4.0,   // Network formation  
-        scale: 3.5,     // Scale/distribute
-        crisis: 17.0    // Crisis curves and headlines
+        problem: getVal('dur-problem', 22.0),
+        thesis: getVal('dur-thesis', 20.0),
+        demo1: getVal('dur-demo1', 10.0),
+        demo2: getVal('dur-demo2', 10.0),
+        demo3: getVal('dur-demo3', 10.0),
+        demo4: getVal('dur-demo4', 10.0),
+        system: getVal('dur-system', 18.0),
+        admin: getVal('dur-admin', 14.0),
+        evolve: getVal('dur-evolve', 10.0),
+        economy: getVal('dur-economy', 10.0),
+        ending: getVal('dur-ending', 10.0)
       };
 
       let t = 0;
 
-      // Calculate sub-phase timing within Problem section
-      const p1Start = t;
-      const p1End = t += problemSubPhases.entrance;
-      const p2Start = t;
-      const p2End = t += problemSubPhases.network;
-      const p3Start = t;
-      const p3End = t += problemSubPhases.scale;
-      const p4Start = t;
-      const p4End = t += problemSubPhases.crisis;
+      // 1. PROBLEM SETUP [0:00-0:22 default]
+      const problemStart = t;
+      // Break down the 22s Problem section proportionally for animation beats
+      const p1Start = problemStart; // Sparkle/Network
+      const p1End = problemStart + (d.problem * 0.1);
+      const p2Start = p1End;
+      const p2End = problemStart + (d.problem * 0.25);
+      const p3Start = p2End;
+      const p3End = problemStart + (d.problem * 0.35);
+      const p4Start = p3End;
+      const p4End = problemStart + d.problem; // Crisis + Solution (0.65 of total)
+      t += d.problem;
 
-      // Reset t to end of Problem section for thesis section
-      t = d.problem; // 28s
+      // 2. THESIS + RATIONALE [0:22-0:42 default]
+      const thesisStart = t;
+      // Proportional sub-anchors for 20s Thesis section
+      const tGapStart = thesisStart;
+      const tGapEnd = thesisStart + (d.thesis * 0.4);      // Gap reveal (8s)
+      const tIconsStart = tGapEnd;
+      const tIconsEnd = thesisStart + (d.thesis * 0.75);   // Comparison/Badges (7s)
+      const tDissolveStart = tIconsEnd;
+      const tDissolveEnd = thesisStart + (d.thesis * 0.9); // Dissolve (3s)
+      const thesisEnd = t += d.thesis;                     // Final Hold/Pause (2s)
+
+      // 3. DEMO STEPPER [0:42-1:22 default]
+      // Each demo phase has its own start/end plus small transitions
+      const demo1Start = t;
+      const demo1End = t += d.demo1;
+      const demo2Start = t;
+      const demo2End = t += d.demo2;
+      const demo3Start = t;
+      const demo3End = t += d.demo3;
+      const demo4Start = t;
+      const demo4End = t += d.demo4;
+
+      // 4. SYSTEM REVEAL [1:22-1:40 default]
+      const systemStart = t;
+      const systemEnd = t += d.system;
+
+      // 5. ADMIN DEMO [1:40-1:54 default]
+      const adminStart = t;
+      const adminEnd = t += d.admin;
+
+      // 6. SYSTEM EVOLUTION [1:54-2:04 default]
+      const evolveStart = t;
+      const evolveEnd = t += d.evolve;
+
+      // 7. ECONOMY [2:04-2:14 default]
+      const economyStart = t;
+      const economyEnd = t += d.economy;
+
+      // 8. ENDING [2:14-2:24 default]
+      const endingStart = t;
+      const endingEnd = t += d.ending;
 
       return {
-        // Problem Setup [0:00-0:28] - with sub-phases for animation
-        problemStart: 0, problemEnd: d.problem,
-        // Legacy sub-phase names for backwards compatibility with animation code
-        p1Start, p1End,  // Sparkle entrance
-        p2Start, p2End,  // Network
-        p3Start, p3End,  // Scale  
-        p4Start, p4End,  // Crisis (ends at ~28s matching Problem end)
-        p5Start: d.problem, p5End: d.problem, // Legacy - no longer used
-        p6Start: d.problem, p6End: d.problem, // Legacy - no longer used
-
-        // Thesis + Rationale [0:28-0:50]
-        thesisStart: t, thesisEnd: t += d.thesis,
-        // Video Demo Stepper (between thesis and ecosystem)
-        demoStart: t,
-        demoEnd: t += (d.demo1 + d.demo2 + d.demo3 + d.demo4 + 1.5), // +1.5s for fade-in/hold/fade-out
-        demo1: d.demo1, demo2: d.demo2, demo3: d.demo3, demo4: d.demo4,
-        // Phase 1: Pre-session Training [0:50-1:05]
-        phase1Start: t, phase1End: t += d.phase1,
-        // Phase 2: During Session [1:05-1:25]
-        phase2Start: t, phase2End: t += d.phase2,
-        // Phase 3: Post-session Reflection [1:25-1:40]
-        phase3Start: t, phase3End: t += d.phase3,
-        // System Reveal [1:40-2:05]
-        systemStart: t, systemEnd: t += d.system,
-        // Admin/Researcher Views [2:05-2:18]
-        adminStart: t, adminEnd: t += d.admin,
-        // System Evolution [2:18-2:28]
-        evolveStart: t, evolveEnd: t += d.evolve,
-        // Economic Transformation + Close [2:28-2:40]
-        closeStart: t, closeEnd: t += d.close,
-
-        // Legacy aliases for animation code
-        p6designStart: d.problem + d.thesis, p6designEnd: d.problem + d.thesis + d.phase1 + d.phase2 + d.phase3,
-        p6valueStart: d.problem + d.thesis + d.phase1 + d.phase2 + d.phase3, p6valueEnd: d.problem + d.thesis + d.phase1 + d.phase2 + d.phase3 + d.system,
-
+        d, // expose raw intervals
+        problemStart, problemEnd: problemStart + d.problem,
+        p1Start, p1End, p2Start, p2End, p3Start, p3End, p4Start, p4End,
+        thesisStart, thesisEnd,
+        tGapStart, tGapEnd, tIconsStart, tIconsEnd, tDissolveStart, tDissolveEnd,
+        demo1Start, demo1End, demo2Start, demo2End, demo3Start, demo3End, demo4Start, demo4End,
+        systemStart, systemEnd,
+        adminStart, adminEnd,
+        evolveStart, evolveEnd,
+        economyStart, economyEnd,
+        endingStart, endingEnd,
         total: t
       };
     }
@@ -2231,7 +2189,7 @@
 
       tl.to(sparkleEls.map(s => s.el), { opacity: 1, duration: 0.3, stagger: 0.1 }, T.p1Start);
 
-      // Smooth entrance - Hard Lock at end
+      // Smooth entrance
       sparkleEls.forEach((s, i) => {
         tl.to(s.el, {
           attr: { d: generateStarPath(s.d.cx, s.d.cy, s.d.r) },
@@ -2239,8 +2197,6 @@
           ease: 'power2.out'
         }, T.p1Start + 0.4 + i * 0.1);
       });
-
-      tl.to({}, { duration: 2 }, T.p1End);
 
       // ----------------------------------------
       // PHASE 2: NETWORK (Morph -> Move)
@@ -2263,7 +2219,7 @@
         // Input layer is indices 0, 1, 2
         const target = netPos[i];
         const targetD = generateCirclePath(target.x, target.y, 14);
-        tl.to(s.el, { attr: { d: targetD }, duration: 0.9, ease: 'power2.inOut' }, T.p2Start + 1.1);
+        tl.to(s.el, { attr: { d: targetD }, duration: 1.5, ease: 'power2.inOut' }, T.p2Start + 1.1);
 
         // Add to main array
         const targetGroup = target.x < CONSTANTS.THRESHOLD_X ? els.leftCurve : els.rightCurve;
@@ -2281,7 +2237,7 @@
         allDots.push({ el: dot, x: p.x, y: p.y, isPath: false });
 
         tl.to(dot, { opacity: 1, duration: 0.3 }, T.p2Start + 1.8 + i * 0.02)
-          .to(dot, { attr: { cx: p.x }, duration: 0.5, ease: 'power2.out' }, '<');
+          .to(dot, { attr: { cx: p.x }, duration: 1.2, ease: 'power2.out' }, '<');
       }
 
       // Draw Lines
@@ -2301,8 +2257,7 @@
         });
       }
 
-      tl.to(networkLines, { strokeDashoffset: 0, duration: 0.6, stagger: 0.005, ease: 'power1.out' }, T.p2Start + 2.5);
-      tl.to({}, { duration: 2 }, T.p2End);
+      tl.to(networkLines, { strokeDashoffset: 0, duration: 1.5, stagger: 0.005, ease: 'power1.out' }, T.p2End - 1.5);
 
       // ----------------------------------------
       // PHASE 3: ZOOM OUT (Grid Alignment)
@@ -2338,7 +2293,6 @@
 
         tl.to(dot, { opacity: 1, duration: 0.3 }, T.p3Start + 1.5 + (i - 18) * 0.01);
       }
-      tl.to({}, { duration: 2 }, T.p3End);
 
       // ----------------------------------------
       // PHASE 4: CRISIS (Grow Area from Bottom)
@@ -2351,51 +2305,45 @@
 
       // 1. Form Normal Curve (Gold) - horizontal line forms into curve
       const normY = gridX.map(x => bellCurveY(x, CONSTANTS.NORMAL_PEAK));
+      // Curve formation timing
+      const curveFormStart = T.p4Start + (T.p4End - T.p4Start) * 0.05;
+      const curveFormDuration = 1.2;
+
       allDots.forEach((dot, i) => {
         dot.y = normY[i];
         const props = dot.isPath ? { attr: { d: generateCirclePath(dot.x, dot.y, 5), fill: COLORS.success } }
           : { attr: { cy: dot.y, fill: COLORS.success } };
-        tl.to(dot.el, { ...props, duration: 1.2, ease: 'power2.out' }, T.p4Start + 0.5);
+        tl.to(dot.el, { ...props, duration: curveFormDuration, ease: 'power2.out' }, curveFormStart);
       });
-      // Curve formation ends at T.p4Start + 1.7
+      // Curve formation ends mid-way
+      const curveDone = T.p4Start + (T.p4End - T.p4Start) * 0.15;
 
-      // 2. Grow Area Fill (Gold) - from baseline upward using clipPath
-      // Wait for curve to be fully in place, then fill area completely
-      const minY = bellCurveY(CONSTANTS.NORMAL_PEAK, CONSTANTS.NORMAL_PEAK); // Top of curve
-      const maxHeight = CONSTANTS.BASELINE_Y - minY; // Full height from baseline to top
+      // 2. Grow Area Fill (Gold) - ScaleY from baseline (840px)
+      // This ensures 1:1 synchronization with the dots which also animate from Y=840.
 
+      // Set initial state: ScaleY=0 (flat on baseline), full opacity but invisible due to scale
       tl.set(els.area, {
-        attr: { d: generateAreaPath(CONSTANTS.NORMAL_PEAK), fill: COLORS.success }
-      }, T.p4Start + 1.7);
+        attr: { d: generateAreaPath(CONSTANTS.NORMAL_PEAK), fill: COLORS.success },
+        transformOrigin: `50% ${CONSTANTS.BASELINE_Y}px`, // Grow from bottom
+        scaleY: 0,
+        opacity: 0.5
+      }, curveFormStart);
 
-      // Set initial clipPath state: start at baseline with 0 height
-      tl.set(els.areaClipRect, {
-        attr: {
-          x: CONSTANTS.THRESHOLD_X,
-          y: CONSTANTS.BASELINE_Y,
-          width: 1800 - CONSTANTS.THRESHOLD_X,
-          height: 0
-        }
-      }, T.p4Start + 1.7);
+      // Animate ScaleY to 1 (full height) - perfectly matches dot movement
+      tl.to(els.area, {
+        scaleY: 1,
+        duration: curveFormDuration,
+        ease: 'power2.out'
+      }, curveFormStart);
 
-      // Animate clipPath rectangle to reveal from bottom to top - FULLY FILL
-      tl.to(els.areaClipRect, {
-        attr: {
-          y: minY,  // Move y to top of curve
-          height: maxHeight  // Grow height to full
-        },
-        duration: 1.5,
-        ease: 'circ.out'
-      }, T.p4Start + 1.7);
-
-      tl.to(els.area, { opacity: 0.5, duration: 1.5, ease: 'circ.out' }, T.p4Start + 1.7);
+      // (ClipRect logic removed as ScaleY is more performant and perfectly synced)
       // Area fill ends at T.p4Start + 3.2
 
       // Short "breath" after the fill lands before the crisis shift.
-      const areaFillComplete = T.p4Start + 3.2;
-      tl.to(els.area, { opacity: 0.56, duration: 0.14, ease: 'sine.inOut' }, areaFillComplete + 0.08);
-      tl.to(els.area, { opacity: 0.5, duration: 0.18, ease: 'sine.inOut' }, areaFillComplete + 0.22);
-      tl.to({}, { duration: 0.5 }, areaFillComplete);
+      const p4Dur = T.p4End - T.p4Start;
+      const areaFillComplete = T.p4Start + p4Dur * 0.1;
+      tl.to(els.area, { opacity: 0.56, duration: p4Dur * 0.02, ease: 'sine.inOut' }, areaFillComplete + p4Dur * 0.01);
+      tl.to(els.area, { opacity: 0.5, duration: p4Dur * 0.02, ease: 'sine.inOut' }, areaFillComplete + p4Dur * 0.03);
 
       // 3. Shift to Crisis (Red) - push curve LEFT with colored area shrinking
       // Let it FULLY end its animation
@@ -2403,19 +2351,19 @@
       const crisisD = generateAreaPath(CONSTANTS.CRISIS_PEAK);
       const crisisMinY = bellCurveY(CONSTANTS.CRISIS_PEAK, CONSTANTS.CRISIS_PEAK); // Top of crisis curve
       const crisisMaxHeight = CONSTANTS.BASELINE_Y - crisisMinY; // Full height for crisis curve
-      const crisisShiftStart = areaFillComplete + 0.5;
+      const crisisShiftStart = areaFillComplete + p4Dur * 0.02;
 
       allDots.forEach((dot, i) => {
         dot.y = crisisY[i];
         const props = dot.isPath ? { attr: { d: generateCirclePath(dot.x, dot.y, 5), fill: COLORS.crisis } }
           : { attr: { cy: dot.y, fill: COLORS.crisis } };
-        tl.to(dot.el, { ...props, duration: 2.0, ease: 'sine.inOut' }, crisisShiftStart);
+        tl.to(dot.el, { ...props, duration: p4Dur * 0.1, ease: 'sine.inOut' }, crisisShiftStart);
       });
 
       // Update area path and adjust clipPath rectangle for crisis curve height
       tl.to(els.area, {
         attr: { d: crisisD, fill: COLORS.crisis },
-        duration: 2.0,
+        duration: (T.p4End - T.p4Start) * 0.15,
         ease: 'sine.inOut'
       }, crisisShiftStart);
 
@@ -2425,18 +2373,18 @@
           y: crisisMinY,
           height: crisisMaxHeight
         },
-        duration: 2.0,
+        duration: p4Dur * 0.1,
         ease: 'sine.inOut'
       }, crisisShiftStart);
-      const crisisShiftEnd = crisisShiftStart + 2.0;
+      const crisisShiftEnd = crisisShiftStart + p4Dur * 0.08;
 
       // Pause to let crisis shift fully complete
-      tl.to({}, { duration: 0.5 }, crisisShiftEnd);
+      tl.to({}, { duration: p4Dur * 0.02 }, crisisShiftEnd);
 
       // 4. ALL Crisis Headlines Pop-Up - one after another, finish, then shrink and exit
       // Use accelerating staggers for a stronger cadence ramp.
       const crisisImageCount = crisisImageEls.length;
-      const crisisEnterStart = crisisShiftEnd + 0.5;
+      const crisisEnterStart = crisisShiftEnd + p4Dur * 0.02;
       const crisisEnterDuration = 0.42;
       const crisisEnterOffsets = buildAcceleratingOffsets(crisisImageCount, 0.2, 0.08);
       crisisImageEls.forEach((img, i) => {
@@ -2449,10 +2397,10 @@
         }, crisisEnterStart + crisisEnterOffsets[i]);
       });
       const crisisEnterEnd = crisisEnterStart + crisisEnterOffsets[crisisImageCount - 1] + crisisEnterDuration;
-      tl.to({}, { duration: 1.15 }, crisisEnterEnd);
+      tl.to({}, { duration: p4Dur * 0.02 }, crisisEnterEnd);
 
-      // Crisis images shrink to their OWN centers (not all to same center)
-      const crisisExitStart = crisisEnterEnd + 1.15;
+      // Crisis images shrink to their OWN centers
+      const crisisExitStart = crisisEnterEnd + p4Dur * 0.02;
       const crisisExitDuration = 0.95;
       const crisisExitOffsets = buildAcceleratingOffsets(crisisImageCount, 0.16, 0.06);
       crisisImageEls.forEach((img, i) => {
@@ -2466,14 +2414,14 @@
       const crisisExitEnd = crisisExitStart + crisisExitOffsets[crisisImageCount - 1] + crisisExitDuration;
 
       // Pause to ensure ALL crisis images fully exit before tutoring works image appears
-      tl.to({}, { duration: 0.5 }, crisisExitEnd);
+      tl.to({}, { duration: p4Dur * 0.02 }, crisisExitEnd);
 
       // ----------------------------------------
       // PHASE 5: SOLUTION (2 Steps + Proxy Sync)
       // ----------------------------------------
       // Tutoring works image appears AFTER all crisis images fully disappear
-      const tutoringImageStart = crisisExitEnd + 0.5;
-      tl.to({}, { duration: 2 }, tutoringImageStart);
+      const tutoringImageStart = crisisExitEnd + p4Dur * 0.05;
+      tl.to({}, { duration: p4Dur * 0.05 }, tutoringImageStart);
 
       tutoringImageEls.forEach((img, i) => {
         tl.to([img.el, img.imageEl, img.rectEl], {
@@ -2487,12 +2435,14 @@
       // Tutoring image fully appears by tutoringImageStart + 0.6
 
       // Pause to let tutoring image be fully visible
-      tl.to({}, { duration: 0.5 }, tutoringImageStart + 0.6);
+      tl.to({}, { duration: p4Dur * 0.05 }, tutoringImageStart + 0.6);
 
       // NOW start curve animation - AFTER tutoring image fully appears
-      const curveAnimationStart = tutoringImageStart + 0.6;
+      const curveAnimationStart = tutoringImageStart + p4Dur * 0.05;
+      const curveWindow = T.p4End - curveAnimationStart - p4Dur * 0.05; // Leave 5% hold at end
 
       const proxy = { peak: CONSTANTS.CRISIS_PEAK };
+
       // Helper to update everything based on peak
       const updateGraph = () => {
         const pk = proxy.peak;
@@ -2500,30 +2450,21 @@
         els.area.setAttribute('d', generateAreaPath(pk));
 
         // Color Interpolation: Red -> Yellow (center) -> Teal (right)
-        // Red (255, 79, 79) at CRISIS_PEAK (650)
-        // Yellow-Gold (242, 201, 76) at midPeak (650) - but wait, CRISIS_PEAK is 650, so we need different values
-        // Actually: Red at CRISIS_PEAK (650), Yellow-Gold at midPeak (650), Teal at SOLUTION_PEAK (1050)
-        // Since CRISIS_PEAK and midPeak are both 650, we'll use NORMAL_PEAK (850) for yellow
         let col;
         if (pk <= CONSTANTS.NORMAL_PEAK) {
-          // Interpolate Red -> Yellow-Gold
           const t = (pk - CONSTANTS.CRISIS_PEAK) / (CONSTANTS.NORMAL_PEAK - CONSTANTS.CRISIS_PEAK);
           const r = Math.round(255 + (242 - 255) * t);
           const g = Math.round(79 + (201 - 79) * t);
           const b = Math.round(79 + (76 - 79) * t);
           col = `rgb(${r},${g},${b})`;
         } else {
-          // Interpolate Yellow-Gold -> Teal
-          // Clamp t to 1.0 to handle Step 3 (Peak 1500) where pk > SOLUTION_PEAK
           let t = (pk - CONSTANTS.NORMAL_PEAK) / (CONSTANTS.SOLUTION_PEAK - CONSTANTS.NORMAL_PEAK);
           if (t > 1) t = 1;
-
           const r = Math.round(242 + (88 - 242) * t);
           const g = Math.round(201 + (212 - 201) * t);
           const b = Math.round(76 + (222 - 76) * t);
           col = `rgb(${r},${g},${b})`;
         }
-
         els.area.setAttribute('fill', col);
 
         allDots.forEach(dot => {
@@ -2537,50 +2478,49 @@
             dot.el.setAttribute('fill', col);
           }
         });
-
       };
 
       // Step 1: Move to Normal Peak (1020) - Yellow
       // Narrative: "We have the solution..."
       tl.to(proxy, {
-        peak: 1020,
-        duration: 1.1,
+        peak: CONSTANTS.NORMAL_PEAK,
+        duration: curveWindow * 0.4,
         ease: 'sine.inOut',
         onUpdate: updateGraph
       }, curveAnimationStart);
 
-      // Pause (0.5s)
-
-      // Step 2: Move Further Right (1500) - Teal (Clamped)
+      // Step 2: Move Further Right (1260) - Teal shift
       // Narrative: "It pushes the curve even further to the right."
       tl.to(proxy, {
-        peak: 1500,
-        duration: 1.4,
+        peak: CONSTANTS.SOLUTION_PEAK,
+        duration: curveWindow * 0.4,
         ease: 'sine.inOut',
         onUpdate: updateGraph
-      }, curveAnimationStart + 2.0);
+      }, curveAnimationStart + curveWindow * 0.55);
+
+      // Final Hold Peak
+      tl.to({}, { duration: p4Dur * 0.05 }, curveAnimationStart + curveWindow + p4Dur * 0.01);
 
       // Final Pause before Access Gap
 
       // ----------------------------------------
       // PHASE 6: ACCESS GAP (Sort & Compress X)
       // ----------------------------------------
-      // Access gap starts after Step 2 finishes (2.0 + 1.5 + pause)
-      const accessGapStart = curveAnimationStart + 4.5;
+      const accessGapStart = T.tGapStart;
 
-      tl.to(els.area, { opacity: 0, duration: 0.5 }, accessGapStart + 0.2);
+      tl.to(els.area, { opacity: 0, duration: 0.5 }, accessGapStart);
 
       // Tutoring works image exits to the LEFT
       tutoringImageEls.forEach((img, i) => {
         tl.to([img.el, img.imageEl, img.rectEl], {
           x: -960,
           opacity: 0,
-          duration: 0.8,
+          duration: (T.thesisEnd - T.thesisStart) * 0.04,
           ease: 'power2.inOut'
-        }, accessGapStart + 0.2);
+        }, accessGapStart + (T.thesisEnd - T.thesisStart) * 0.01);
       });
 
-      // Sort dots left of threshold to keep curve order
+      // Sort dots left of threshold to keep curve order - using static 1152
       const leftDots = allDots.filter(d => d.x < CONSTANTS.THRESHOLD_X).sort((a, b) => a.x - b.x);
       const rightDots = allDots.filter(d => d.x >= CONSTANTS.THRESHOLD_X);
 
@@ -2590,8 +2530,8 @@
 
       // Left-side access-gap morph: horizontal compression only, NO Y rebalancing.
       // Leftmost dot stays in place; others compress proportionally toward x=690.
-      // Y values are preserved from the peak=1500 curve (end of Step 2).
-      const preGapPeak = 1500; // proxy.peak value after Step 2 completes
+      // Y values are preserved from the peak=1260 curve (end of Step 2).
+      const preGapPeak = 1260; // proxy.peak value after Step 2 completes
       const leftMaxX = leftDots.length ? Math.max(...leftDots.map(d => d.x)) : CONSTANTS.THRESHOLD_X;
       const leftMinX = leftDots.length ? Math.min(...leftDots.map(d => d.x)) : 120;
       const targetMaxX = 690; // right edge of compressed left group
@@ -2599,7 +2539,7 @@
       const leftBase = leftDots.map(dot => ({
         dot,
         x0: dot.x,
-        y0: bellCurveY(dot.x, preGapPeak) // Keep Y from peak=1500 curve, NOT crisis
+        y0: bellCurveY(dot.x, preGapPeak) // Keep Y from peak=1260 curve
       }));
 
       // Kill GSAP's attr management on left dot elements so earlier cy/d tweens
@@ -2607,7 +2547,7 @@
       tl.call(() => {
         leftDots.forEach(d => {
           gsap.killTweensOf(d.el, 'attr');
-          // Snap to current curve position (peak=1500), NOT crisis curve
+          // Snap to current curve position (peak=1260)
           const currentY = bellCurveY(d.x, preGapPeak);
           if (d.isPath) {
             d.el.setAttribute('d', generateCirclePath(d.x, currentY, 4));
@@ -2624,25 +2564,24 @@
       const leftMorph = { t: 0 };
       tl.to(leftMorph, {
         t: 1,
-        duration: 1.0,
+        duration: (T.thesisEnd - T.thesisStart) * 0.05,
         ease: 'power2.inOut',
         onUpdate: () => {
           leftBase.forEach(item => {
             const ratio = leftMaxX > leftMinX ? (item.x0 - leftMinX) / (leftMaxX - leftMinX) : 0;
             const finalX = leftMinX + ratio * (targetMaxX - leftMinX);
             const xNew = item.x0 + (finalX - item.x0) * leftMorph.t;
-            const yNew = item.y0;
+            const yNew = item.y0; // No Y change
             item.dot.x = xNew;
             item.dot.y = yNew;
             if (item.dot.isPath) {
               item.dot.el.setAttribute('d', generateCirclePath(xNew, yNew, 4));
-              item.dot.el.setAttribute('fill', COLORS.crisis);
             } else {
               item.dot.el.setAttribute('cx', xNew);
               item.dot.el.setAttribute('cy', yNew);
               item.dot.el.setAttribute('r', 4);
-              item.dot.el.setAttribute('fill', COLORS.crisis);
             }
+            item.dot.el.setAttribute('fill', COLORS.crisis);
           });
         }
       }, accessGapStart + 0.5);
@@ -2672,8 +2611,9 @@
       // 9. Scene B
 
       // --- Timing anchors ---
-      const gapFullyVisible = accessGapStart + 3.3;   // gap rect + label done
-      const dotsExitStart = gapFullyVisible + 2.0;    // pause, then dots leave
+      const thesisDur = T.thesisEnd - T.thesisStart;
+      const gapFullyVisible = accessGapStart + thesisDur * 0.15;   // gap rect + label done
+      const dotsExitStart = gapFullyVisible + thesisDur * 0.1;    // pause, then dots leave
 
       // 3. Dots Exit & Graph Text Fades
       const aiDots = Array.from(els.leftCurve.querySelectorAll('circle, path'));
@@ -2684,16 +2624,16 @@
         const box = node.getBBox();
         return box.x + (box.width / 2);
       };
-      const aiDotsOrdered = [...aiDots].sort((a, b) => getNodeVisualX(b) - getNodeVisualX(a));
       const humanDotsOrdered = [...humanDots].sort((a, b) => getNodeVisualX(a) - getNodeVisualX(b));
 
       if (aiDots.length > 0) {
-        tl.to(aiDotsOrdered, {
-          x: -500,
+        // Smooth mass exit for the left cluster to avoid noisy per-dot breakup.
+        tl.to(els.leftCurve, {
+          x: -540,
+          y: -6,
           opacity: 0,
-          duration: 1.4,
-          ease: 'power3.in',
-          stagger: 0.018
+          duration: 1.52,
+          ease: 'sine.inOut'
         }, dotsExitStart);
       }
       if (humanDots.length > 0) {
@@ -2714,9 +2654,9 @@
         ease: 'power2.in'
       }, dotsExitStart);
 
-      // 4. Icons Appear (after dots mostly gone)
-      const iconAppearStart = dotsExitStart + 1.2;
-      const iconGap = 0.6; // pause between AI and Human for narration
+      // 4. Icons Appear (starting tIconsStart)
+      const iconAppearStart = T.tIconsStart;
+      const iconGap = (T.tIconsEnd - T.tIconsStart) * 0.15; // Proportional pause
 
       // AI Icon (Left) - centered via xPercent/yPercent
       tl.to('#ai-icon-large', {
@@ -2734,10 +2674,10 @@
         opacity: 1, scale: 1.0, duration: 1.2, ease: 'power2.out'
       }, iconAppearStart + 1.3 + iconGap);
 
-      // 5. Badges Appear (synced with gap shrink)
-      const badgesStart = iconAppearStart + 1.2 + iconGap + 1.2 + 0.2;
-      const badgeStagger = 0.55; // slower, narration-friendly pace
-      const aiToHumanPause = 0.45; // small narration pause between AI and Human badge sets
+      // 5. Badges Appear (staggered within the Icons window)
+      const badgesStart = iconAppearStart + iconGap + 1.2;
+      const badgeStagger = (T.tIconsEnd - badgesStart) / 8; // Distribute badges
+      const aiToHumanPause = badgeStagger * 0.5;
 
       // Badge rotations for visual interest (tilted angles)
       const badgeAnimations = [
@@ -2771,9 +2711,8 @@
         tl.to(badge.id, { rotation: badge.rotation, duration: 0.2, ease: 'sine.inOut' }, badgeStart + 0.66);
       });
 
-      // Gap shrinks slightly slower than badges appear for a more gradual feel
-      const badgesTotalDuration = badgeStagger * (badgeAnimations.length - 1) + aiToHumanPause + 0.86;
-      const gapShrinkDuration = badgesTotalDuration + 1.5; // ~3.75s - slower pace
+      // Gap shrinks during the badges phase
+      const gapShrinkDuration = T.tIconsEnd - badgesStart;
       tl.to(els.gapRect, {
         scaleX: 0.15,
         opacity: 0.1,
@@ -2791,14 +2730,17 @@
       // 6. Hold (1.0s after gap finishes shrinking)
 
       // 7. Dissolve All
-      const dissolveStart = badgesStart + gapShrinkDuration + 1.0;
+      const dissolveStart = T.tDissolveStart;
 
-      tl.to(['#ai-icon-large', '#human-icon-large', '#ai-icon-label', '#human-icon-label', '.capability-badge', els.gapRect], {
+      tl.to(['#ai-icon-large', '#human-icon-large', '#ai-icon-label', '#human-icon-label', '.capability-badge', els.gapRect, '#central-node'], {
         opacity: 0,
         scale: 0.85,
-        duration: 1.5,
+        duration: 1.0,
         ease: 'power2.in'
       }, dissolveStart);
+
+      // Force instant hide central node just in case drift remains
+      tl.set('#central-node', { opacity: 0 }, dissolveStart + 1.1);
 
       // Fade threshold line + label during dissolve
       tl.to(['#threshold', '#threshold-label'], {
@@ -2813,20 +2755,20 @@
       // ========================================
       // 9. VIDEO DEMO STEPPER
       // ========================================
-      const demoStart = dissolveStart + 6.5; // after 1.5s dissolve + 5s intentional blank
-
-      const DEMO_LINE_LEN = 244; // px, matches stroke-dasharray on fill lines
-      const demoDurations = [T.demo1, T.demo2, T.demo3, T.demo4];
+      // PHASE 9: DEMO STEPPER
+      // ========================================
+      const demo1Start = T.demo1Start;
+      const demoDurations = [T.d.demo1, T.d.demo2, T.d.demo3, T.d.demo4];
 
       // 9a. Fade in stepper group (0.5s)
       tl.to('#demo-stepper', {
         opacity: 1,
         duration: 0.5,
         ease: 'power2.out'
-      }, demoStart);
+      }, demo1Start);
 
       // 9b. Sequential phase activations
-      let demoPhaseTime = demoStart + 0.5; // after fade-in completes
+      let demoPhaseTime = demo1Start + 0.5; // after fade-in completes
 
       for (let i = 0; i < 4; i++) {
         const n = i + 1; // 1-indexed node
@@ -2878,22 +2820,23 @@
       const demoSectionEnd = demoFadeOut + 0.5;
 
       // ========================================
-      // 10. SCENE TRANSITION: A -> B
+      // 10. SYSTEM REVEAL (Transition to Scene B)
       // ========================================
-      const transitionStart = demoSectionEnd;
+      const transitionStart = T.systemStart;
+      const systemDur = T.d.system;
+      const sceneBStart = transitionStart + systemDur * 0.1;
 
       tl.to([els.leftCurve], {
-        x: '-100vw', opacity: 0, duration: 1.2, ease: 'power2.in', stagger: 0.01
+        x: '-100vw', opacity: 0, duration: systemDur * 0.1, ease: 'power2.in', stagger: 0.01
       }, transitionStart);
 
       tl.to([els.rightCurve], {
-        x: '100vw', opacity: 0, duration: 1.2, ease: 'power2.in', stagger: 0.01
+        x: '100vw', opacity: 0, duration: systemDur * 0.1, ease: 'power2.in', stagger: 0.01
       }, transitionStart);
 
-      tl.to(els.sceneEnvironment, { autoAlpha: 0, duration: 0.5 }, transitionStart);
+      tl.to(els.sceneEnvironment, { autoAlpha: 0, duration: systemDur * 0.05 }, transitionStart);
 
       // Founder Entrance
-      const sceneBStart = transitionStart + 1.0;
       tl.set(els.sceneB, { opacity: 1 }, sceneBStart);
 
       /*
@@ -2903,44 +2846,44 @@
       // 2. PAUSE (0:31 - 0:36) (5s Static)
       // 3. Thesis Resume (0:36 - 0:44)
       // 4. Ecosystem (0:46+)
-
+  
       // Start time logic: accessGapStart is approx 0:28
       // Fix: Delay start to allow Gap Animation (0:28-0:30) and a brief Pause (0:30-0:33) before transitioning
       const thesisSequenceStart = accessGapStart + 5.0;
-
+  
       // 1. Dots & Gap Visualization (Same as before, happening at 0:28-0:31)
       // No changes needed to the setup lines above (2300-2312)
-
+  
       // 2. THE PAUSE (0:31 - 0:36)
       // Use a dummy tween to enforce the pause gap in the timeline logic
       // essentially we just start the "Resume" at thesisSequenceStart + 8.0s
       // (3s setup + 5s pause)
       const resumeStart = thesisSequenceStart + 8.0; // Approx 0:36
-
+  
       // 3. RESUME: Transition to Thesis (0:36+)
-
+  
       // A. Dots Exit & Graph Dissolve (0:36 - 0:38)
       const aiDots = Array.from(els.leftCurve.querySelectorAll('circle, path'));
       const humanDots = Array.from(els.rightCurve.querySelectorAll('circle, path'));
-
+  
       if (aiDots.length > 0) {
         tl.to(aiDots, { x: -500, opacity: 0, duration: 2.0, ease: 'power2.in' }, resumeStart);
       }
-
+  
       if (humanDots.length > 0) {
         tl.to(humanDots, { x: 500, opacity: 0, duration: 2.0, ease: 'power2.in' }, resumeStart);
       }
-
+  
       // Hide graph elements
       tl.to(['#graph-title', '#threshold-label', '#threshold'], {
         opacity: 0,
         duration: 0.5
       }, resumeStart);
-
+  
       // B. AI Side Appears (0:36 - 0:38)
       // AI Icon
       tl.to('#ai-icon-large', { opacity: 1, scale: 1.0, duration: 0.8, ease: 'back.out(1.2)' }, resumeStart);
-
+  
       // AI Badges
       const aiBadges = ['#ai-badge-1', '#ai-badge-2', '#ai-badge-3'];
       tl.to(aiBadges, {
@@ -2951,12 +2894,12 @@
         stagger: 0.2,
         ease: 'back.out(1.7)'
       }, resumeStart + 0.5);
-
+  
       // C. Human Side Appears (0:38 - 0:40)
       const humanSideStart = resumeStart + 2.0; // 0:38
       // Human Icon
       tl.to('#human-icon-large', { opacity: 1, scale: 1.0, duration: 0.8, ease: 'back.out(1.2)' }, humanSideStart);
-
+  
       // Human Badges
       const humanBadges = ['#human-badge-1', '#human-badge-2', '#human-badge-3'];
       tl.to(humanBadges, {
@@ -2967,7 +2910,7 @@
         stagger: 0.2,
         ease: 'back.out(1.7)'
       }, humanSideStart + 0.5);
-
+  
       // D. Gap Shrinks (0:36 - 0:42)
       // Starts with Resume, continues
       tl.to(els.gapRect, {
@@ -2977,7 +2920,7 @@
         ease: 'none',
         transformOrigin: '50% 50%'
       }, resumeStart);
-
+  
       // E. Dissolve All (0:44 - 0:46)
       const dissolveStart = humanSideStart + 6.0; // 0:38 + 6 = 0:44
       tl.to(['#ai-icon-large', '#human-icon-large', '.capability-badge', els.gapRect, '#gap-label'], {
@@ -2986,23 +2929,23 @@
         duration: 2.0,
         ease: 'power2.in'
       }, dissolveStart);
-
+  
       // Hide graph labels again just in case
       tl.to(['#graph-title', '#threshold-label', '#threshold', '#gap-label'], {
         x: -100,
         opacity: 0,
         duration: 0.5
       }, dissolveStart);
-
+  
       // Hide scene environment
       tl.to(els.sceneEnvironment, { opacity: 0, duration: 0.5 }, dissolveStart);
-
+  
       // ========================================
       // SCENE TRANSITION: A -> B (Starts after dissolve)
       // ========================================
       // Connect directly to Ecosystem, skipping Dashboard
       const transitionStart = dissolveStart + 2.0; // 0:46
-
+  
       // --- STEP 1: The Parting of the Ways (Clearing Scene A) ---
       tl.to([els.leftCurve], {
         x: '-100vw',
@@ -3011,7 +2954,7 @@
         ease: 'power2.in',
         stagger: 0.01
       }, transitionStart);
-
+  
       tl.to([els.rightCurve], {
         x: '100vw',
         opacity: 0,
@@ -3019,18 +2962,18 @@
         ease: 'power2.in',
         stagger: 0.01
       }, transitionStart);
-
+  
       tl.to(els.sceneEnvironment, {
         autoAlpha: 0,
         duration: 0.5
       }, transitionStart);
-
+  
       // --- STEP 1: Founder Entrance (0:47+) ---
       const sceneBStart = transitionStart + 1.0;
-
-
+  
+  
       tl.set(els.sceneB, { opacity: 1 }, sceneBStart);
-
+  
       */
       // Force clean entrance with fromTo to overwrite any prior state
       tl.fromTo(els.centralNode,
@@ -3452,9 +3395,23 @@
       // 4c/4d removed per direction: no node wiggle or line brightness pulse.
 
       // ================================================================
-      // PHASE 5: Cost Transformation (2:20 - 2:34)
+      // PHASE 12: Admin Demo (Transition to Admin)
       // ================================================================
-      const costStart = evolutionStart + 20.0; // 2:20
+      const transitionAdminStart = T.adminStart;
+      tl.to(els.sceneB, { opacity: 1 }, transitionAdminStart);
+
+      // (Admin Demo animation logic goes here/remains mapped to transitionAdminStart)
+
+      // ================================================================
+      // PHASE 13: System Evolution
+      // ================================================================
+      const evolveSceneStart = T.evolveStart;
+
+      // ================================================================
+      // PHASE 14: Economy ($2,000 -> $20)
+      // ================================================================
+      const economyStart = T.economyStart;
+      const endingStart = T.endingStart;
 
       // Step 1: Fade out ecosystem & Reposition Logo (2:20-2:22.5)
       const ecoTargets = [
@@ -3478,7 +3435,7 @@
         opacity: 0,
         duration: 2.5,
         ease: 'power2.out'
-      }, costStart);
+      }, economyStart);
 
       // Freeze all line dash offsets at handoff so no lingering drift remains.
       tl.set([
@@ -3490,59 +3447,57 @@
         '#path-in-researchers', '#path-out-researchers'
       ], {
         strokeDashoffset: 0
-      }, costStart);
+      }, economyStart);
 
       // Force hide satellite schools separately to be sure
       tl.to(['#satellite-school-1', '#satellite-school-2', '#satellite-school-3', '#satellite-school-4'], {
         opacity: 0,
         duration: 2.5
-      }, costStart);
+      }, economyStart);
 
       // Reposition Central Node Logo: UP 90px (from 540->450) and SCALE to 0.85
       // transformOrigin 50% 50% ensures it shrinks from its own center
-      tl.set('#central-node', { x: 0 }, costStart);
+      tl.set('#central-node', { x: 0 }, economyStart);
       tl.to('#central-node', {
         y: -90,
         scale: 0.85,
         transformOrigin: '50% 50%',
         duration: 2.5,
         ease: 'power2.inOut'
-      }, costStart);
+      }, economyStart);
 
       // Step 2: Fade in Cost Text (2:23-2:24.5, 1.5 seconds)
       // "$2,000 per student per month" at 100% opacity (CRITICAL: full opacity)
       tl.fromTo(['#cost-display-text', '#cost-subtitle'],
         { y: 10, opacity: 0 },
         { y: 0, opacity: 1.0, duration: 1.5, ease: 'power2.out' },
-        costStart + 3.0
+        economyStart + 3.0
       );
 
       // Keep deterministic equal spacing while "$2,000" is on screen.
       const slots2000Hold = centeredSlotsFromSteps(COST_2000_STEPS);
-      tl.set('#cost-currency', { attr: { x: slots2000Hold[0] } }, costStart + 3.0);
-      tl.set('#cost-digit-2', { attr: { x: slots2000Hold[1] } }, costStart + 3.0);
-      tl.set('#cost-comma', { attr: { x: slots2000Hold[2] } }, costStart + 3.0);
-      tl.set('#cost-zero-1', { attr: { x: slots2000Hold[3] } }, costStart + 3.0);
-      tl.set('#cost-zero-2', { attr: { x: slots2000Hold[4] } }, costStart + 3.0);
-      tl.set('#cost-zero-3', { attr: { x: slots2000Hold[5] } }, costStart + 3.0);
+      tl.set('#cost-currency', { attr: { x: slots2000Hold[0] } }, economyStart + 3.0);
+      tl.set('#cost-digit-2', { attr: { x: slots2000Hold[1] } }, economyStart + 3.0);
+      tl.set('#cost-comma', { attr: { x: slots2000Hold[2] } }, economyStart + 3.0);
+      tl.set('#cost-zero-1', { attr: { x: slots2000Hold[3] } }, economyStart + 3.0);
+      tl.set('#cost-zero-2', { attr: { x: slots2000Hold[4] } }, economyStart + 3.0);
+      tl.set('#cost-zero-3', { attr: { x: slots2000Hold[5] } }, economyStart + 3.0);
+      const ecoDur = T.d.economy;
       tl.set(['#cost-currency', '#cost-digit-2', '#cost-comma', '#cost-zero-1', '#cost-zero-2', '#cost-zero-3'], {
         x: 0,
         opacity: 1
-      }, costStart + 3.0);
+      }, economyStart + ecoDur * 0.3);
 
-      // Hold state: 2:24.5-2:28 (3.5 seconds) - Display at full opacity
-      // No animation needed, just wait
+      // Step 3: Transformation $2,000 -> $20
+      const transStart = economyStart + ecoDur * 0.4;
+      const finalFrameStart = endingStart;
 
-      // Step 3: Transformation $2,000 -> $20 (2:28-2:31)
-      const transStart = costStart + 8.0; // 2:28
-      const finalFrameStart = costStart + 14.0; // 2:34
-
-      // Keep logo centered (x) during cost display window to avoid inherited drift from prior scenes.
+      // Keep logo centered during cost display
       tl.to('#central-node', {
         x: 0,
-        duration: finalFrameStart - costStart,
+        duration: endingStart - economyStart,
         ease: 'none'
-      }, costStart);
+      }, economyStart);
 
       // 3a. Simply drop ",00" (comma + last two zeros) to form "$20".
       tl.to(['#cost-comma', '#cost-zero-2', '#cost-zero-3'], {
@@ -3552,7 +3507,7 @@
       }, transStart);
 
       // Optical center for "$20": place "2" near page center to avoid right-heavy reading.
-      const costCenterX = 945;
+      const costCenterX = 960;
 
       // 3b. "$20" becomes prominent and stays centered.
       tl.to('#cost-display-text', {
@@ -3561,27 +3516,28 @@
         x: 0,
         y: 24,
         svgOrigin: `${costCenterX} 680`,
-        duration: 1.2,
+        duration: ecoDur * 0.12,
         ease: 'power2.out'
-      }, transStart + 0.5);
+      }, transStart + ecoDur * 0.05);
 
-      // Re-center the surviving "$20" glyphs as one centered unit.
+      // 3b. "$20" becomes prominent and stays centered.
       const slots20 = centeredSlots(3, COST_STEP_20, costCenterX);
-      tl.to('#cost-currency', { attr: { x: slots20[0] }, duration: 1.2, ease: 'power2.out' }, transStart + 0.5);
-      tl.to('#cost-digit-2', { attr: { x: slots20[1] - 10 }, duration: 1.2, ease: 'power2.out' }, transStart + 0.5);
-      tl.to('#cost-zero-1', { attr: { x: slots20[2] - 10 }, duration: 1.2, ease: 'power2.out' }, transStart + 0.5);
-      tl.set(['#cost-currency', '#cost-digit-2', '#cost-zero-1'], { x: 0 }, transStart + 2.01);
+      tl.to('#cost-currency', { attr: { x: slots20[0] }, duration: ecoDur * 0.12, ease: 'power2.out' }, transStart + ecoDur * 0.05);
+      tl.to('#cost-digit-2', { attr: { x: slots20[1] }, duration: ecoDur * 0.12, ease: 'power2.out' }, transStart + ecoDur * 0.05);
+      tl.to('#cost-zero-1', { attr: { x: slots20[2] }, duration: ecoDur * 0.12, ease: 'power2.out' }, transStart + ecoDur * 0.05);
+      tl.set(['#cost-currency', '#cost-digit-2', '#cost-zero-1'], { x: 0 }, transStart + ecoDur * 0.2);
 
       // Keep subtitle centered under "$20" as the headline shifts.
       tl.to('#cost-subtitle', {
         x: 0,
         y: 24,
         opacity: 1.0,
-        duration: 1.2,
+        duration: ecoDur * 0.12,
         ease: 'power2.out'
-      }, transStart + 0.5);
+      }, transStart + ecoDur * 0.05);
 
-      // Step 4: Final frame transition (2:34-2:40)
+      // 11. ADMIN DEMO
+      const adminDemoStart = T.adminStart;
 
       // Map logo target directly from Figma Page 8 reference node (1600x900).
       const getBottomRightLogoTarget = () => {
@@ -3609,13 +3565,14 @@
 
       // Step 4B: logo moves directly to bottom-right while shrinking.
       // Slightly slower to complement staggered text reveal.
-      const logoMoveStart = finalFrameStart + 0.45;
+      const endDur = T.d.ending;
+      const logoMoveStart = finalFrameStart + endDur * 0.05;
       tl.to('#central-node', {
         x: logoTarget.x,
         y: logoTarget.y,
         scale: logoTarget.scale,
         transformOrigin: '50% 50%',
-        duration: 2.0,
+        duration: endDur * 0.2,
         ease: 'power2.out'
       }, logoMoveStart);
 
@@ -3627,53 +3584,53 @@
       }, finalFrameStart);
 
       // Step 5: character-by-character reveal, overlapping logo movement.
-      tl.set('#final-frame-container', { opacity: 1 }, finalFrameStart + 0.5);
-      tl.to('#char-a', { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, finalFrameStart + 0.5);
+      tl.set('#final-frame-container', { opacity: 1 }, finalFrameStart + endDur * 0.05);
+      tl.to('#char-a', { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, finalFrameStart + endDur * 0.05);
       tl.to('#char-p, #char-l, #char-u, #char-s', {
         opacity: 1,
         y: 0,
         duration: 0.4,
         ease: 'power2.out',
         stagger: 0.08
-      }, finalFrameStart + 0.9);
+      }, finalFrameStart + endDur * 0.09);
       tl.to('#char-f, #char-o, #char-r', {
         opacity: 1,
         y: 0,
         duration: 0.4,
         ease: 'power2.out',
         stagger: 0.08
-      }, finalFrameStart + 1.54);
+      }, finalFrameStart + endDur * 0.15);
       tl.to('#char-e, #char-v, #char-e2, #char-r2, #char-y', {
         opacity: 1,
         y: 0,
         duration: 0.4,
         ease: 'power2.out',
         stagger: 0.08
-      }, finalFrameStart + 2.1);
+      }, finalFrameStart + endDur * 0.21);
       tl.to('#char-c, #char-l2, #char-a2, #char-s2, #char-s3', {
         opacity: 1,
         y: 0,
         duration: 0.4,
         ease: 'power2.out',
         stagger: 0.08
-      }, finalFrameStart + 2.82);
+      }, finalFrameStart + endDur * 0.28);
 
       // Step 6: blob/pencil stagger reveal (2:37.54-2:38.54).
-      const blobStart = finalFrameStart + 3.54;
+      const blobStart = finalFrameStart + endDur * 0.35;
       const blobTargets = ['#blob-pencil', '#blob-1', '#blob-2', '#blob-3', '#blob-4', '#blob-5'];
       blobTargets.forEach((selector, index) => {
         tl.to(selector, {
           opacity: 1,
           scale: 1,
-          duration: 0.62,
+          duration: endDur * 0.06,
           ease: 'back.out(1.25)'
         }, blobStart + (index * 0.16));
       });
 
-      // Step 7: final hold (2:38.6-2:40).
+      // Final hold till end
       tl.to({}, {
-        duration: 1.4
-      }, finalFrameStart + 4.6);
+        duration: 0.5
+      }, T.endingEnd - 0.5);
 
     } // End of buildTimeline function
 
