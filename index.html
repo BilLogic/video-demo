@@ -2373,16 +2373,39 @@
       leftDots.forEach(d => els.leftCurve.appendChild(d.el));
       rightDots.forEach(d => els.rightCurve.appendChild(d.el));
 
-      // Left-side access-gap morph (rolled back from updateGraph hook):
-      // X compresses toward [120..690], Y stays on baseline.
-      const leftMinX = leftDots.length ? Math.min(...leftDots.map(d => d.x)) : 120;
+      // Left-side access-gap morph: horizontal compression only, NO Y rebalancing.
+      // Leftmost dot stays in place; others compress proportionally toward x=690.
+      // Y values are preserved from the peak=1500 curve (end of Step 2).
+      const preGapPeak = 1500; // proxy.peak value after Step 2 completes
       const leftMaxX = leftDots.length ? Math.max(...leftDots.map(d => d.x)) : CONSTANTS.THRESHOLD_X;
-      const leftBase = leftDots.map(dot => ({ 
-        dot, 
-        x0: dot.x, 
-        y0: bellCurveY(dot.x, CONSTANTS.CRISIS_PEAK) 
+      const leftMinX = leftDots.length ? Math.min(...leftDots.map(d => d.x)) : 120;
+      const targetMaxX = 690; // right edge of compressed left group
+
+      const leftBase = leftDots.map(dot => ({
+        dot,
+        x0: dot.x,
+        y0: bellCurveY(dot.x, preGapPeak) // Keep Y from peak=1500 curve, NOT crisis
       }));
-      const leftSpan = Math.max(1, leftMaxX - leftMinX);
+
+      // Kill GSAP's attr management on left dot elements so earlier cy/d tweens
+      // don't overwrite our manual setAttribute calls during the shift
+      tl.call(() => {
+        leftDots.forEach(d => {
+          gsap.killTweensOf(d.el, 'attr');
+          // Snap to current curve position (peak=1500), NOT crisis curve
+          const currentY = bellCurveY(d.x, preGapPeak);
+          if (d.isPath) {
+            d.el.setAttribute('d', generateCirclePath(d.x, currentY, 4));
+          } else {
+            d.el.setAttribute('cx', d.x);
+            d.el.setAttribute('cy', currentY);
+            d.el.setAttribute('r', 4);
+          }
+          d.el.setAttribute('fill', COLORS.crisis);
+        });
+      }, null, accessGapStart + 0.45);
+
+      // Proportional horizontal compression: leftmost stays, rightmost → targetMaxX
       const leftMorph = { t: 0 };
       tl.to(leftMorph, {
         t: 1,
@@ -2390,9 +2413,9 @@
         ease: 'power2.inOut',
         onUpdate: () => {
           leftBase.forEach(item => {
-            const pct = (item.x0 - leftMinX) / leftSpan;
-            const targetX = 120 + pct * (690 - 120);
-            const xNew = item.x0 + (targetX - item.x0) * leftMorph.t;
+            const ratio = leftMaxX > leftMinX ? (item.x0 - leftMinX) / (leftMaxX - leftMinX) : 0;
+            const finalX = leftMinX + ratio * (targetMaxX - leftMinX);
+            const xNew = item.x0 + (finalX - item.x0) * leftMorph.t;
             const yNew = item.y0;
             item.dot.x = xNew;
             item.dot.y = yNew;
