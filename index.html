@@ -904,13 +904,13 @@
     }
 
     .demo-progress-bg {
-      stroke: #C4C4C4;
+      stroke: #546E7A;
       stroke-width: 3;
       fill: none;
     }
 
     .demo-progress-fill {
-      stroke: #58D4DE;
+      stroke: #0E4F51;
       stroke-width: 3;
       fill: none;
     }
@@ -1110,35 +1110,35 @@
           <!-- Node 01: Pre-session Coach -->
           <g id="demo-node-1">
             <circle id="demo-circle-1" class="demo-stepper-circle" cx="510" cy="960" r="28" fill="transparent"
-              stroke="#C4C4C4" />
-            <text id="demo-number-1" class="demo-stepper-number" x="510" y="960" fill="#757575">01</text>
-            <text id="demo-label-1" class="demo-stepper-label" x="510" y="1018" fill="#757575">Pre-session Coach</text>
+              stroke="#546E7A" />
+            <text id="demo-number-1" class="demo-stepper-number" x="510" y="960" fill="#374151">01</text>
+            <text id="demo-label-1" class="demo-stepper-label" x="510" y="1018" fill="#374151">Pre-session Coach</text>
           </g>
 
           <!-- Node 02: In-session Co-pilot -->
           <g id="demo-node-2">
             <circle id="demo-circle-2" class="demo-stepper-circle" cx="810" cy="960" r="28" fill="transparent"
-              stroke="#C4C4C4" />
-            <text id="demo-number-2" class="demo-stepper-number" x="810" y="960" fill="#757575">02</text>
-            <text id="demo-label-2" class="demo-stepper-label" x="810" y="1018" fill="#757575">In-session
+              stroke="#546E7A" />
+            <text id="demo-number-2" class="demo-stepper-number" x="810" y="960" fill="#374151">02</text>
+            <text id="demo-label-2" class="demo-stepper-label" x="810" y="1018" fill="#374151">In-session
               Co-pilot</text>
           </g>
 
           <!-- Node 03: Post-session Companion -->
           <g id="demo-node-3">
             <circle id="demo-circle-3" class="demo-stepper-circle" cx="1110" cy="960" r="28" fill="transparent"
-              stroke="#C4C4C4" />
-            <text id="demo-number-3" class="demo-stepper-number" x="1110" y="960" fill="#757575">03</text>
-            <text id="demo-label-3" class="demo-stepper-label" x="1110" y="1018" fill="#757575">Post-session
+              stroke="#546E7A" />
+            <text id="demo-number-3" class="demo-stepper-number" x="1110" y="960" fill="#374151">03</text>
+            <text id="demo-label-3" class="demo-stepper-label" x="1110" y="1018" fill="#374151">Post-session
               Companion</text>
           </g>
 
           <!-- Node 04: Repeat -->
           <g id="demo-node-4">
             <circle id="demo-circle-4" class="demo-stepper-circle" cx="1410" cy="960" r="28" fill="transparent"
-              stroke="#C4C4C4" />
-            <text id="demo-number-4" class="demo-stepper-number" x="1410" y="960" fill="#757575">04</text>
-            <text id="demo-label-4" class="demo-stepper-label" x="1410" y="1018" fill="#757575">Repeat</text>
+              stroke="#546E7A" />
+            <text id="demo-number-4" class="demo-stepper-number" x="1410" y="960" fill="#374151">04</text>
+            <text id="demo-label-4" class="demo-stepper-label" x="1410" y="1018" fill="#374151">Repeat</text>
           </g>
         </g>
 
@@ -2085,9 +2085,10 @@
       // Reset Video Demo Stepper
       gsap.set('#demo-stepper', { opacity: 0 });
       for (let i = 1; i <= 4; i++) {
-        gsap.set(`#demo-circle-${i}`, { attr: { fill: 'transparent', stroke: '#C4C4C4' } });
-        gsap.set(`#demo-number-${i}`, { fill: '#757575' });
-        gsap.set(`#demo-label-${i}`, { fill: '#757575', fontWeight: 400 });
+        gsap.set(`#demo-circle-${i}`, { attr: { fill: 'transparent', stroke: '#546E7A' } });
+        gsap.set(`#demo-number-${i}`, { fill: '#374151' });
+        // The stroke-dashoffset is handled, but line color is via CSS class
+        gsap.set(`#demo-label-${i}`, { fill: '#374151', fontWeight: 400 });
       }
       gsap.set(['#demo-fill-1', '#demo-fill-2', '#demo-fill-3'], {
         attr: { 'stroke-dashoffset': 244 }
@@ -2100,6 +2101,7 @@
       gsap.set('.capability-badge', { opacity: 0, scale: 0.95, xPercent: -50, yPercent: -50 });
       gsap.set('.tagline-char', { opacity: 0, y: -15 });
       gsap.set('.blob-item', { opacity: 0, scale: 0.8 });
+      gsap.set('body', { backgroundColor: '#F9F5EF' });
       gsap.set('.svg-wrapper, #canvas', { backgroundColor: '#F9F5EF' });
       gsap.set('#cost-display-text', {
         x: 0,
@@ -2318,26 +2320,38 @@
       // Curve formation ends mid-way
       const curveDone = T.p4Start + (T.p4End - T.p4Start) * 0.15;
 
-      // 2. Grow Area Fill (Gold) - ScaleY from baseline (840px)
-      // This ensures 1:1 synchronization with the dots which also animate from Y=840.
+      // 2. Grow Area Fill (Gold) - from baseline upward (animate 'd' attribute for perfect sync)
+      // This ensures 1:1 synchronization with the dots which also animate using the same curve math.
 
-      // Set initial state: ScaleY=0 (flat on baseline), full opacity but invisible due to scale
+      // Set initial state: Flat on baseline, full opacity but flat shape
+      // We generate a flat path by using a very small peak relative to baseline, or just 0 height?
+      // Actually simpler: just generate the flat path manually or use a helper.
+      // Let's us a helper: generateAreaPath(BASELINE_Y) would work if bellCurveY handles it?
+      // bellCurveY(x, peak) uses exponent. If peak is far away? No.
+      // We'll just construct a flat path string: M 1152 840 L 1800 840 L 1800 840 Z
+      // But we need the SAME number of points for smooth interpolation.
+      // We can reuse generateAreaPath but pass a "flat" flag or handle it manually.
+      // Let's create a flat path string with same point count.
+      let flatAreaD = `M ${CONSTANTS.THRESHOLD_X} ${CONSTANTS.BASELINE_Y}`;
+      for (let x = CONSTANTS.THRESHOLD_X; x <= 1800; x += 12) {
+        flatAreaD += ` L ${x} ${CONSTANTS.BASELINE_Y}`;
+      }
+      flatAreaD += ` L 1800 ${CONSTANTS.BASELINE_Y} Z`;
+
       tl.set(els.area, {
-        attr: { d: generateAreaPath(CONSTANTS.NORMAL_PEAK), fill: COLORS.success },
-        transformOrigin: `50% ${CONSTANTS.BASELINE_Y}px`, // Grow from bottom
-        scaleY: 0,
-        opacity: 0.5
+        attr: { d: flatAreaD, fill: COLORS.success },
+        opacity: 0.5,
+        scaleY: 1 // Clear any previous scaleY
       }, curveFormStart);
 
-      // Animate ScaleY to 1 (full height) - perfectly matches dot movement
+      // Animate 'd' attribute to the target curve shape
+      // GSAP Plugin for attr handles the string interpolation if point count matches (which it does)
       tl.to(els.area, {
-        scaleY: 1,
+        attr: { d: generateAreaPath(CONSTANTS.NORMAL_PEAK) },
         duration: curveFormDuration,
         ease: 'power2.out'
       }, curveFormStart);
 
-      // (ClipRect logic removed as ScaleY is more performant and perfectly synced)
-      // Area fill ends at T.p4Start + 3.2
 
       // Short "breath" after the fill lands before the crisis shift.
       const p4Dur = T.p4End - T.p4Start;
@@ -2767,6 +2781,18 @@
         ease: 'power2.out'
       }, demo1Start);
 
+      // Transition background color to #BEC8CA for the demo section
+      tl.to('body', {
+        backgroundColor: '#BEC8CA',
+        duration: 1.5,
+        ease: 'power2.inOut'
+      }, demo1Start);
+      tl.to('.svg-wrapper, #canvas', {
+        backgroundColor: '#BEC8CA',
+        duration: 1.5,
+        ease: 'power2.inOut'
+      }, demo1Start);
+
       // 9b. Sequential phase activations
       let demoPhaseTime = demo1Start + 0.5; // after fade-in completes
 
@@ -2776,7 +2802,7 @@
 
         // Activate node circle: transparent -> teal fill, grey stroke -> none
         tl.to(`#demo-circle-${n}`, {
-          attr: { fill: '#58D4DE', stroke: 'none' },
+          attr: { fill: '#0E4F51', stroke: 'none' },
           duration: 0.3,
           ease: 'power2.out'
         }, demoPhaseTime);
@@ -2790,7 +2816,7 @@
 
         // Activate label: grey -> teal, weight 400 -> 500
         tl.to(`#demo-label-${n}`, {
-          fill: '#58D4DE',
+          fill: '#0E4F51',
           fontWeight: 500,
           duration: 0.3,
           ease: 'power2.out'
@@ -2835,6 +2861,18 @@
       }, transitionStart);
 
       tl.to(els.sceneEnvironment, { autoAlpha: 0, duration: systemDur * 0.05 }, transitionStart);
+
+      // Revert background color to #F9F5EF for the system reveal
+      tl.to('body', {
+        backgroundColor: '#F9F5EF',
+        duration: 1.5,
+        ease: 'power2.inOut'
+      }, transitionStart);
+      tl.to('.svg-wrapper, #canvas', {
+        backgroundColor: '#F9F5EF',
+        duration: 1.5,
+        ease: 'power2.inOut'
+      }, transitionStart);
 
       // Founder Entrance
       tl.set(els.sceneB, { opacity: 1 }, sceneBStart);
